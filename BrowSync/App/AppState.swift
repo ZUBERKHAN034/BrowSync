@@ -56,7 +56,7 @@ final class AppState: ObservableObject {
         routerRules = settingsService.routerSettings.rules
 
         // Wire daemon delegate
-        daemon.delegate = self as? DaemonServerDelegate  // Set in BrowSyncApp
+        daemon.delegate = self
         
         checkFullDiskAccess()
     }
@@ -126,8 +126,7 @@ final class AppState: ObservableObject {
         for rule in routerRules {
             if rule.evaluate(url: url, sourceAppBundleId: sourceAppBundleId) {
                 if let targetId = rule.targetBrowserId,
-                   let targetInfo = browserInfos.first(where: { $0.id.rawValue == targetId }),
-                   let targetAppURL = targetInfo.appURL {
+                   let targetAppURL = appURL(forBrowserId: targetId) {
                     NSWorkspace.shared.open([url], withApplicationAt: targetAppURL, configuration: NSWorkspace.OpenConfiguration())
                     return
                 }
@@ -146,10 +145,22 @@ final class AppState: ObservableObject {
             fallbackInfo = browserInfos.first(where: { $0.isDefault }) ?? browserInfos.first(where: { $0.browser == .safari })
         }
         
-        let targetAppURL = fallbackInfo?.appURL ?? browserInfos.first(where: { $0.isDefault })?.appURL
+        let targetAppURL = fallbackInfo?.appURL
+            ?? fallbackBrowserId.flatMap { appURL(forBrowserId: $0) }
+            ?? browserInfos.first(where: { $0.isDefault })?.appURL
+            ?? Browser.safari.appURL
         if let appURL = targetAppURL {
             NSWorkspace.shared.open([url], withApplicationAt: appURL, configuration: NSWorkspace.OpenConfiguration())
         }
+    }
+
+    private func appURL(forBrowserId browserId: String) -> URL? {
+        if let appURL = browserInfos.first(where: { $0.id.rawValue == browserId })?.appURL {
+            return appURL
+        }
+
+        guard let browser = Browser(rawValue: browserId) else { return nil }
+        return browser.appURL
     }
 
     // MARK: - Browser Refresh
@@ -163,19 +174,32 @@ final class AppState: ObservableObject {
             var updated = info
             
             let lastConnectedKey = "extension_last_connected_\(info.browser.rawValue)"
+            let wasInstalled = UserDefaults.standard.bool(forKey: "extension_installed_\(info.browser.rawValue)")
             
             if daemon.isConnected(browser: info.browser) {
                 updated.extensionStatus = .connected
                 UserDefaults.standard.set(true, forKey: "extension_installed_\(info.browser.rawValue)")
                 UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: lastConnectedKey)
-            } else if UserDefaults.standard.bool(forKey: "extension_installed_\(info.browser.rawValue)") {
+            } else if wasInstalled {
+                // UserDefaults records a successful past connection — trust this over the filesystem scan.
+                // The scanner can miss the extension when the browser is closed (profile locked, etc.)
                 let isRunning = !NSWorkspace.shared.runningApplications.filter { $0.bundleIdentifier == info.browser.bundleIdentifier }.isEmpty
                 
                 if !isRunning {
                     updated.extensionStatus = .offline
-                } else if updated.extensionStatus == .extensionRequired || updated.extensionStatus == .notInstalled {
-                    updated.extensionStatus = .waitingConnection
+                } else {
+                    let lastConnected = UserDefaults.standard.double(forKey: lastConnectedKey)
+                    // If it disconnected more than 10 seconds ago, it's effectively offline 
+                    // (either the service worker went to sleep or the extension crashed/was disabled)
+                    if Date().timeIntervalSince1970 - lastConnected < 10 {
+                        updated.extensionStatus = .waitingConnection
+                    } else {
+                        updated.extensionStatus = .offline
+                    }
                 }
+            } else if updated.extensionStatus == .waitingConnection {
+                // Scanner found extension in filesystem but no prior connection record — keep it
+                updated.extensionStatus = .waitingConnection
             }
             
             return updated
@@ -185,7 +209,24 @@ final class AppState: ObservableObject {
 
     func updateConnectionStatus(for browser: Browser, connected: Bool) {
         if let idx = browserInfos.firstIndex(where: { $0.browser == browser }) {
-            browserInfos[idx].extensionStatus = connected ? .connected : .waitingConnection
+            let lastConnectedKey = "extension_last_connected_\(browser.rawValue)"
+            
+            if connected {
+                browserInfos[idx].extensionStatus = .connected
+                UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: lastConnectedKey)
+            } else {
+                browserInfos[idx].extensionStatus = .waitingConnection
+                
+                Task {
+                    try? await Task.sleep(nanoseconds: 5_000_000_000) // 5s grace period
+                    await MainActor.run {
+                        if let currentIdx = self.browserInfos.firstIndex(where: { $0.browser == browser }), 
+                           self.browserInfos[currentIdx].extensionStatus != .connected {
+                            self.browserInfos[currentIdx].extensionStatus = .offline
+                        }
+                    }
+                }
+            }
         }
     }
 

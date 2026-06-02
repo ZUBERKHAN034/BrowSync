@@ -4,6 +4,7 @@ struct RouterTabView: View {
     @EnvironmentObject var appState: AppState
     @State private var editingRule: RouterRule?
     @State private var showingRuleEditor = false
+    @State private var installedApps: [InstalledAppInfo] = []
 
     var body: some View {
         VStack(spacing: 0) {
@@ -49,7 +50,12 @@ struct RouterTabView: View {
                         
                         Picker("", selection: $appState.fallbackBrowserId) {
                             ForEach(appState.browserInfos.filter { $0.isInstalled }) { info in
-                                Text(info.displayName).tag(String?(info.id.rawValue))
+                                Label {
+                                    Text(info.displayName)
+                                } icon: {
+                                    AppIconImage(appURL: info.appURL)
+                                }
+                                .tag(String?(info.id.rawValue))
                             }
                         }
                         .labelsHidden()
@@ -58,9 +64,11 @@ struct RouterTabView: View {
                     .padding(.vertical, 4)
                     
                     ForEach($appState.routerRules) { $rule in
-                        RouterRuleRow(rule: $rule) {
+                        RouterRuleRow(rule: $rule, installedApps: installedApps) {
                             editingRule = rule
                             showingRuleEditor = true
+                        } onDelete: {
+                            appState.routerRules.removeAll { $0.id == rule.id }
                         }
                     }
                     .onDelete { indexSet in
@@ -76,7 +84,6 @@ struct RouterTabView: View {
                 HStack {
                     Button(action: {
                         let newRule = RouterRule()
-                        appState.routerRules.append(newRule)
                         editingRule = newRule
                         showingRuleEditor = true
                     }) {
@@ -92,7 +99,7 @@ struct RouterTabView: View {
         }
         .sheet(isPresented: $showingRuleEditor) {
             if let rule = editingRule {
-                RuleEditorView(rule: rule) { updatedRule in
+                RuleEditorView(rule: rule, initialInstalledApps: installedApps) { updatedRule in
                     if let index = appState.routerRules.firstIndex(where: { $0.id == updatedRule.id }) {
                         appState.routerRules[index] = updatedRule
                     } else {
@@ -109,6 +116,19 @@ struct RouterTabView: View {
         }
         .onAppear {
             appState.checkDefaultBrowser()
+            loadInstalledApps()
+        }
+    }
+
+    private func loadInstalledApps() {
+        guard installedApps.isEmpty else { return }
+
+        Task {
+            try? await Task.sleep(nanoseconds: 200_000_000)
+            let apps = await Task.detached(priority: .utility) {
+                InstalledAppResolver.loadApplications()
+            }.value
+            installedApps = apps
         }
     }
 }
@@ -116,7 +136,9 @@ struct RouterTabView: View {
 struct RouterRuleRow: View {
     @EnvironmentObject var appState: AppState
     @Binding var rule: RouterRule
+    var installedApps: [InstalledAppInfo]
     var onEdit: () -> Void
+    var onDelete: () -> Void
     
     var body: some View {
         HStack {
@@ -126,24 +148,27 @@ struct RouterRuleRow: View {
             VStack(alignment: .leading) {
                 Text(rule.name)
                     .font(.headline)
-                Text(rule.summaryText)
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                    .lineLimit(1)
-                    .truncationMode(.tail)
+                conditionSummary
             }
             
             Spacer()
             
             if let targetId = rule.targetBrowserId {
-                let displayName = appState.browserInfos.first(where: { $0.id.rawValue == targetId })?.displayName ?? targetId
-                Text("使用 \(displayName)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                let targetInfo = appState.browserInfos.first(where: { $0.id.rawValue == targetId })
+                HStack(spacing: 6) {
+                    AppIconImage(appURL: targetInfo?.appURL, size: 16)
+                    Text(targetInfo?.displayName ?? targetId)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
             } else {
-                Text("走默认规则")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
+                HStack(spacing: 6) {
+                    Image(systemName: "arrow.uturn.right.circle")
+                        .foregroundStyle(.secondary)
+                    Text("默认")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
             }
             
             Button(action: onEdit) {
@@ -151,7 +176,48 @@ struct RouterRuleRow: View {
             }
             .buttonStyle(.plain)
             .padding(.leading, 8)
+
+            Button(role: .destructive, action: onDelete) {
+                Image(systemName: "trash")
+                    .foregroundColor(.red)
+            }
+            .buttonStyle(.plain)
         }
         .padding(.vertical, 4)
+    }
+
+    @ViewBuilder
+    private var conditionSummary: some View {
+        if rule.conditions.isEmpty {
+            Text("无条件")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        } else {
+            HStack(spacing: 6) {
+                ForEach(Array(rule.conditions.enumerated()), id: \.element.id) { index, condition in
+                    if index > 0 {
+                        Text(rule.logic == .and ? "且" : "或")
+                            .font(.caption)
+                            .foregroundStyle(.tertiary)
+                    }
+                    conditionSummaryItem(condition)
+                }
+            }
+            .lineLimit(1)
+        }
+    }
+
+    @ViewBuilder
+    private func conditionSummaryItem(_ condition: RuleCondition) -> some View {
+        if condition.field == .sourceApp {
+            let app = installedApps.first { $0.id == condition.value }
+            AppIconImage(appURL: app?.url, size: 16)
+                .help(app?.name ?? condition.value)
+        } else {
+            Text(condition.summaryText)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .truncationMode(.tail)
+        }
     }
 }

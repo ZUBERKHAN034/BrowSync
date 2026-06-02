@@ -11,12 +11,13 @@ struct BrowSyncApp: App {
     @StateObject private var appState = AppState()
 
     var body: some Scene {
-        WindowGroup(id: "SettingsWindow") {
+        Window("BrowSync", id: "SettingsWindow") {
             ContentView()
                 .environmentObject(appState)
                 .frame(width: 750, height: 600)
                 .onAppear {
                     appDelegate.appState = appState
+                    appDelegate.settingsWindowDidAppear()
                 }
         }
         .windowResizability(.contentSize)
@@ -37,13 +38,22 @@ struct BrowSyncApp: App {
 
 // MARK: - App Delegate
 
+@MainActor
 final class AppDelegate: NSObject, NSApplicationDelegate {
     var appState: AppState?
     let updaterController: SPUStandardUpdaterController
+    private var shouldShowSettingsWindow = false
+    private var pendingURLRequests: [(url: URL, sourceAppBundleId: String?)] = []
 
     override init() {
         updaterController = SPUStandardUpdaterController(startingUpdater: true, updaterDelegate: nil, userDriverDelegate: nil)
         super.init()
+    }
+
+    func applicationWillFinishLaunching(_ notification: Notification) {
+        if SettingsService().general.hideWindowOnStartup {
+            hideDockIcon()
+        }
     }
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -52,15 +62,85 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         
         // Register for Apple Events to handle HTTP/HTTPS URLs
         NSAppleEventManager.shared().setEventHandler(self, andSelector: #selector(handleGetURLEvent(_:withReplyEvent:)), forEventClass: AEEventClass(kInternetEventClass), andEventID: AEEventID(kAEGetURL))
+        NotificationCenter.default.addObserver(self, selector: #selector(windowWillClose(_:)), name: NSWindow.willCloseNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(settingsWindowDidBecomeKey(_:)), name: NSWindow.didBecomeKeyNotification, object: nil)
         
         let settingsService = SettingsService()
         if settingsService.general.hideWindowOnStartup {
-            NSApp.setActivationPolicy(.accessory)
+            hideDockIcon()
             DispatchQueue.main.async {
                 NSApp.windows.first?.close()
             }
         } else {
+            showDockIcon()
+        }
+    }
+
+    func settingsWindowDidAppear() {
+        shouldShowSettingsWindow = false
+        flushPendingURLRequests()
+        updateDockIconForVisibleWindows()
+    }
+
+    func prepareToOpenSettingsWindow() {
+        shouldShowSettingsWindow = true
+        showDockIcon()
+    }
+
+    func showExistingSettingsWindowIfPossible() -> Bool {
+        guard let window = settingsWindow else { return false }
+
+        shouldShowSettingsWindow = true
+        showDockIcon()
+        NSApp.activate(ignoringOtherApps: true)
+        window.makeKeyAndOrderFront(nil)
+        return true
+    }
+
+    func showDockIcon() {
+        if NSApp.activationPolicy() != .regular {
             NSApp.setActivationPolicy(.regular)
+        }
+    }
+
+    func hideDockIcon() {
+        if NSApp.activationPolicy() != .accessory {
+            NSApp.setActivationPolicy(.accessory)
+        }
+    }
+
+    @objc private func windowWillClose(_ notification: Notification) {
+        DispatchQueue.main.async { [weak self] in
+            self?.updateDockIconForVisibleWindows()
+        }
+    }
+
+    @objc private func settingsWindowDidBecomeKey(_ notification: Notification) {
+        guard let window = notification.object as? NSWindow,
+              isSettingsWindow(window)
+        else { return }
+        showDockIcon()
+    }
+
+    private var settingsWindow: NSWindow? {
+        NSApp.windows.first(where: isSettingsWindow)
+    }
+
+    private func isSettingsWindow(_ window: NSWindow) -> Bool {
+        window.canBecomeMain && window.title == "BrowSync"
+    }
+
+    private func hasVisibleSettingsWindow() -> Bool {
+        NSApp.windows.contains { window in
+            isSettingsWindow(window) && window.isVisible && !window.isMiniaturized
+        }
+    }
+
+    private func updateDockIconForVisibleWindows() {
+        if hasVisibleSettingsWindow() {
+            showDockIcon()
+        } else {
+            hideDockIcon()
         }
     }
 
@@ -68,26 +148,73 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let urlString = event.paramDescriptor(forKeyword: keyDirectObject)?.stringValue,
               let url = URL(string: urlString) else { return }
 
-        // Attempt to extract source application bundle ID
-        var sourceAppBundleId: String? = nil
-        
-        // keyAESourceProcessName / keyEventSourceApplicationBundleID equivalent workaround since some are private
-        // Usually, the easiest way is to ask NSWorkspace for frontmost app, though imperfect
-        if let frontmost = NSWorkspace.shared.frontmostApplication {
-            if frontmost.bundleIdentifier != Bundle.main.bundleIdentifier {
-                sourceAppBundleId = frontmost.bundleIdentifier
-            }
+        hideDockIconIfNoVisibleMainWindow()
+        let sourceAppBundleId = sourceBundleIdentifier(from: event)
+
+        if let appState {
+            appState.handleIncomingURL(url, sourceAppBundleId: sourceAppBundleId)
+        } else {
+            pendingURLRequests.append((url: url, sourceAppBundleId: sourceAppBundleId))
         }
-        
-        // Also check Address descriptor if present
-        if let addrDesc = event.attributeDescriptor(forKeyword: keyAddressAttr) {
-            // Not straightforward to extract bundle ID from address descriptor without private APIs
-            // So we rely on frontmostApplication or similar
+        hideDockIconIfNoVisibleMainWindow()
+    }
+
+    private func flushPendingURLRequests() {
+        guard let appState, !pendingURLRequests.isEmpty else { return }
+        let requests = pendingURLRequests
+        pendingURLRequests.removeAll()
+
+        for request in requests {
+            appState.handleIncomingURL(request.url, sourceAppBundleId: request.sourceAppBundleId)
+        }
+        hideDockIconIfNoVisibleMainWindow()
+    }
+
+    private func hideDockIconIfNoVisibleMainWindow() {
+        if !hasVisibleSettingsWindow() {
+            hideDockIcon()
+        }
+    }
+
+    private func sourceBundleIdentifier(from event: NSAppleEventDescriptor) -> String? {
+        let selfBundleId = Bundle.main.bundleIdentifier
+        let attributeKeys: [AEKeyword] = [keyOriginalAddressAttr, keyAddressAttr]
+
+        for key in attributeKeys {
+            guard let address = event.attributeDescriptor(forKeyword: key),
+                  let bundleId = bundleIdentifier(fromAddressDescriptor: address),
+                  bundleId != selfBundleId
+            else { continue }
+            return bundleId
         }
 
-        Task { @MainActor in
-            appState?.handleIncomingURL(url, sourceAppBundleId: sourceAppBundleId)
+        if let frontmost = NSWorkspace.shared.frontmostApplication,
+           frontmost.bundleIdentifier != selfBundleId {
+            return frontmost.bundleIdentifier
         }
+
+        return nil
+    }
+
+    private func bundleIdentifier(fromAddressDescriptor descriptor: NSAppleEventDescriptor) -> String? {
+        if descriptor.descriptorType == typeApplicationBundleID,
+           let bundleId = descriptor.stringValue {
+            return bundleId
+        }
+
+        if let bundleDescriptor = descriptor.coerce(toDescriptorType: typeApplicationBundleID),
+           let bundleId = bundleDescriptor.stringValue {
+            return bundleId
+        }
+
+        if let pidDescriptor = descriptor.coerce(toDescriptorType: typeKernelProcessID) {
+            let pid = pid_t(pidDescriptor.int32Value)
+            if pid > 0 {
+                return NSRunningApplication(processIdentifier: pid)?.bundleIdentifier
+            }
+        }
+
+        return nil
     }
 
     func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
@@ -114,6 +241,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
+    @Environment(\.openWindow) private var openWindow
 
     var body: some View {
         // Installed Browsers Section
@@ -169,8 +297,11 @@ struct MenuBarView: View {
         }
 
         Button(String(localized: "设置")) {
+            if (NSApp.delegate as? AppDelegate)?.showExistingSettingsWindowIfPossible() != true {
+                (NSApp.delegate as? AppDelegate)?.prepareToOpenSettingsWindow()
+                openWindow(id: "SettingsWindow")
+            }
             NSApp.activate(ignoringOtherApps: true)
-            NSApp.windows.first?.makeKeyAndOrderFront(nil)
         }
 
         Button(String(localized: "检查更新...")) {

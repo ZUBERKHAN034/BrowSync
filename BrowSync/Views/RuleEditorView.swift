@@ -1,6 +1,99 @@
 import SwiftUI
 import AppKit
 
+struct InstalledAppInfo: Identifiable, Hashable {
+    let id: String
+    let name: String
+    let url: URL
+}
+
+@MainActor
+private enum AppIconCache {
+    private static var icons: [String: NSImage] = [:]
+
+    static func icon(for url: URL) -> NSImage {
+        let key = url.path
+        if let icon = icons[key] {
+            return icon
+        }
+
+        let icon = NSWorkspace.shared.icon(forFile: url.path)
+        icons[key] = icon
+        return icon
+    }
+}
+
+struct AppIconImage: View {
+    let appURL: URL?
+    var size: CGFloat = 18
+    @State private var icon: NSImage?
+
+    var body: some View {
+        Group {
+            if let icon {
+                Image(nsImage: icon)
+                    .resizable()
+            } else {
+                Image(systemName: "app")
+                    .resizable()
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .frame(width: size, height: size)
+        .task(id: "\(appURL?.path ?? "")-\(size)") {
+            guard let appURL else {
+                icon = nil
+                return
+            }
+            icon = AppIconCache.icon(for: appURL)
+        }
+    }
+}
+
+enum InstalledAppResolver {
+    static func loadApplications() -> [InstalledAppInfo] {
+        let fm = FileManager.default
+        let directories = [
+            URL(fileURLWithPath: "/Applications"),
+            URL(fileURLWithPath: "/Applications/Utilities"),
+            URL(fileURLWithPath: "/System/Applications"),
+            URL(fileURLWithPath: "/System/Applications/Utilities")
+        ]
+
+        var appsByBundleId: [String: InstalledAppInfo] = [:]
+
+        for directory in directories {
+            guard let contents = try? fm.contentsOfDirectory(
+                at: directory,
+                includingPropertiesForKeys: [.isApplicationKey],
+                options: [.skipsHiddenFiles]
+            ) else { continue }
+
+            for fileURL in contents where fileURL.pathExtension == "app" {
+                guard let bundle = Bundle(url: fileURL), let bundleId = bundle.bundleIdentifier else { continue }
+
+                if let info = bundle.infoDictionary {
+                    let isBackground = (info["LSBackgroundOnly"] as? Bool) == true || (info["LSBackgroundOnly"] as? String) == "1"
+                    let isUIElement = (info["LSUIElement"] as? Bool) == true || (info["LSUIElement"] as? String) == "1"
+                    if isBackground || isUIElement {
+                        continue
+                    }
+                }
+
+                let name = (bundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String)
+                    ?? (bundle.object(forInfoDictionaryKey: "CFBundleName") as? String)
+                    ?? fileURL.deletingPathExtension().lastPathComponent
+
+                appsByBundleId[bundleId] = InstalledAppInfo(id: bundleId, name: name, url: fileURL)
+            }
+        }
+
+        return appsByBundleId.values.sorted {
+            $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending
+        }
+    }
+}
+
 struct RuleEditorView: View {
     @EnvironmentObject var appState: AppState
     @State var rule: RouterRule
@@ -9,12 +102,19 @@ struct RuleEditorView: View {
     var onCancel: () -> Void
     
     // For listing apps
-    @State private var installedApps: [InstalledApp] = []
-    
-    struct InstalledApp: Identifiable, Hashable {
-        let id: String // Bundle ID
-        let name: String
-        let url: URL
+    @State private var installedApps: [InstalledAppInfo] = []
+    @State private var isLoadingApps = false
+
+    init(
+        rule: RouterRule,
+        initialInstalledApps: [InstalledAppInfo] = [],
+        onSave: @escaping (RouterRule) -> Void,
+        onCancel: @escaping () -> Void
+    ) {
+        _rule = State(initialValue: rule)
+        _installedApps = State(initialValue: initialInstalledApps)
+        self.onSave = onSave
+        self.onCancel = onCancel
     }
     
     var body: some View {
@@ -38,7 +138,12 @@ struct RuleEditorView: View {
                         Text("走默认规则").tag(String?.none)
                         Divider()
                         ForEach(appState.browserInfos.filter { $0.isInstalled }) { info in
-                            Text(info.displayName).tag(String?(info.id.rawValue))
+                            Label {
+                                Text(info.displayName)
+                            } icon: {
+                                AppIconImage(appURL: info.appURL)
+                            }
+                            .tag(String?(info.id.rawValue))
                         }
                     }
                 }
@@ -56,6 +161,16 @@ struct RuleEditorView: View {
                         Text("没有设置任何条件，此规则将不会生效。")
                             .foregroundColor(.secondary)
                             .italic()
+                    }
+
+                    if isLoadingApps {
+                        HStack {
+                            ProgressView()
+                                .controlSize(.small)
+                            Text("正在加载 App 列表...")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
                     }
                     
                     ForEach($rule.conditions) { $condition in
@@ -97,50 +212,23 @@ struct RuleEditorView: View {
     }
     
     private func loadInstalledApps() {
-        Task.detached {
-            let fm = FileManager.default
-            let urls = [
-                URL(fileURLWithPath: "/Applications"),
-                URL(fileURLWithPath: "/System/Applications")
-            ]
-            
-            var apps: [InstalledApp] = []
-            
-            for url in urls {
-                guard let enumerator = fm.enumerator(at: url, includingPropertiesForKeys: [.isApplicationKey], options: [.skipsPackageDescendants, .skipsHiddenFiles]) else { continue }
-                
-                for case let fileURL as URL in enumerator {
-                    if fileURL.pathExtension == "app" {
-                        if let bundle = Bundle(url: fileURL), let bundleId = bundle.bundleIdentifier {
-                            // Skip background apps to avoid clutter
-                            if let info = bundle.infoDictionary {
-                                let isBackground = (info["LSBackgroundOnly"] as? Bool) == true || (info["LSBackgroundOnly"] as? String) == "1"
-                                let isUIElement = (info["LSUIElement"] as? Bool) == true || (info["LSUIElement"] as? String) == "1"
-                                if isBackground || isUIElement {
-                                    continue
-                                }
-                            }
-                            let name = fileURL.deletingPathExtension().lastPathComponent
-                            if !apps.contains(where: { $0.id == bundleId }) {
-                                apps.append(InstalledApp(id: bundleId, name: name, url: fileURL))
-                            }
-                        }
-                    }
-                }
-            }
-            
-            let sortedApps = apps.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
-            
-            await MainActor.run {
-                self.installedApps = sortedApps
-            }
+        guard installedApps.isEmpty, !isLoadingApps else { return }
+        isLoadingApps = true
+
+        Task {
+            try? await Task.sleep(nanoseconds: 150_000_000)
+            let apps = await Task.detached(priority: .utility) {
+                InstalledAppResolver.loadApplications()
+            }.value
+            self.installedApps = apps
+            self.isLoadingApps = false
         }
     }
 }
 
 struct ConditionRow: View {
     @Binding var condition: RuleCondition
-    var installedApps: [RuleEditorView.InstalledApp]
+    var installedApps: [InstalledAppInfo]
     var onRemove: () -> Void
     
     var body: some View {
@@ -199,7 +287,7 @@ struct ConditionRow: View {
                             Label {
                                 Text(app.name)
                             } icon: {
-                                Image(nsImage: NSWorkspace.shared.icon(forFile: app.url.path))
+                                AppIconImage(appURL: app.url)
                             }
                             .tag(app.id)
                         }

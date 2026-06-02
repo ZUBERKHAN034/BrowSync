@@ -117,7 +117,7 @@ struct StateSyncTabView: View {
                             }
                             .labelsHidden()
                             .pickerStyle(.menu)
-                            .onChange(of: $site.strategy.wrappedValue) { newValue in
+                            .onChange(of: $site.strategy.wrappedValue) { _, newValue in
                                 if newValue == .primaryWins && syncSettings.browserDataSyncStrategy.wrappedValue != .primaryWins {
                                     if $site.sourceBrowser.wrappedValue == nil {
                                         let firstInstalled = appState.browserInfos.first(where: { $0.isInstalled })?.browser ?? .safari

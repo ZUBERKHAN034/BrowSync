@@ -17,6 +17,7 @@ final class SyncService: ObservableObject {
     var settings: SyncSettings = SyncSettings()
     var backupService: BackupService?
     private let safariBookmarks = SafariBookmarkService()
+    private var latestCookieVersions: [String: Double] = [:]
 
     init() {
         let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
@@ -150,73 +151,44 @@ final class SyncService: ObservableObject {
             }
             return // Don't process further
         }
+
+        if category == "cookie_apply_result" {
+            if case .raw(let raw) = filteredMessage.payload,
+               let summary = raw["summary"]?.value as? String {
+                log("Cookie apply result from [\(clientId)]: \(summary)")
+            }
+            return
+        }
         
         // Filter incoming browser data based on website list policy
-        if category == "browserData" || category == "localStorage" || category == "cookies", let payload = message.payload {
+        if category == "browserData" || category == "localStorage" || category == "sessionStorage" || category == "cookies", let payload = message.payload {
             let policy = settings.websiteListPolicy
-            let sites = settings.websiteSettings.map { $0.domain.lowercased() }
             
             switch payload {
             case .cookies(let cookies):
-                let filtered = cookies.filter { c in
-                    let d = c.domain.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-                    let cleanD = d.starts(with: ".") ? String(d.dropFirst()) : d
-                    
-                    let siteMatch = settings.websiteSettings.first { site in
-                        let listed = site.domain.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-                        guard !listed.isEmpty else { return false }
-                        let cleanListed = listed.starts(with: ".") ? String(listed.dropFirst()) : listed
-                        return cleanD == cleanListed || cleanD.hasSuffix("." + cleanListed) || cleanListed.hasSuffix("." + cleanD)
-                    }
-                    let isListed = siteMatch != nil
-                    
-                    if policy == .allowList && !isListed { return false }
-                    if policy == .blockList && isListed { return false }
-                    
-                    let strategy = siteMatch?.strategy ?? settings.browserDataSyncStrategy
-                    if strategy == .primaryWins {
-                        let source = siteMatch?.sourceBrowser ?? settings.stateSourceBrowser
-                        if !clientId.lowercased().starts(with: source.rawValue.lowercased()) {
-                            return false // Drop because this client is not the primary source
-                        }
-                    }
-                    return true
-                }
+                let filtered = filterCookies(cookies, clientId: clientId, policy: policy)
                 filteredMessage.payload = .cookies(filtered)
+                logCookieDomains(filtered, clientId: clientId)
             case .localStorage(let items):
-                let filtered = items.filter { i in
-                    let o = i.origin.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-                    let host = URL(string: o)?.host ?? o
-                    let cleanHost = host.starts(with: ".") ? String(host.dropFirst()) : host
-                    
-                    let siteMatch = settings.websiteSettings.first { site in
-                        let listed = site.domain.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
-                        guard !listed.isEmpty else { return false }
-                        let cleanListed = listed.starts(with: ".") ? String(listed.dropFirst()) : listed
-                        return cleanHost == cleanListed || cleanHost.hasSuffix("." + cleanListed) || cleanListed.hasSuffix("." + cleanHost)
-                    }
-                    let isListed = siteMatch != nil
-                    
-                    if policy == .allowList && !isListed { return false }
-                    if policy == .blockList && isListed { return false }
-                    
-                    let strategy = siteMatch?.strategy ?? settings.browserDataSyncStrategy
-                    if strategy == .primaryWins {
-                        let source = siteMatch?.sourceBrowser ?? settings.stateSourceBrowser
-                        if !clientId.lowercased().starts(with: source.rawValue.lowercased()) {
-                            return false // Drop because this client is not the primary source
-                        }
-                    }
-                    return true
-                }
+                let filtered = filterStorageItems(items, clientId: clientId, policy: policy)
                 filteredMessage.payload = .localStorage(filtered)
+            case .sessionStorage(let items):
+                let filtered = filterStorageItems(items, clientId: clientId, policy: policy)
+                filteredMessage.payload = .sessionStorage(filtered)
             default: break
             }
             
             // If everything was filtered out, we can drop the message
             switch filteredMessage.payload {
-            case .cookies(let c) where c.isEmpty: return
-            case .localStorage(let l) where l.isEmpty: return
+            case .cookies(let c) where c.isEmpty:
+                log("Dropped cookies from [\(clientId)]: filtered by website/source rules")
+                return
+            case .localStorage(let l) where l.isEmpty:
+                log("Dropped localStorage from [\(clientId)]: filtered by website/source rules")
+                return
+            case .sessionStorage(let s) where s.isEmpty:
+                log("Dropped sessionStorage from [\(clientId)]: filtered by website/source rules")
+                return
             default: break
             }
         }
@@ -228,6 +200,7 @@ final class SyncService: ObservableObject {
             case .tabs(let t): countStr = " (\(t.count) items)"
             case .cookies(let c): countStr = " (\(c.count) items)"
             case .localStorage(let l): countStr = " (\(l.count) items)"
+            case .sessionStorage(let s): countStr = " (\(s.count) items)"
             default: break
             }
         }
@@ -250,6 +223,113 @@ final class SyncService: ObservableObject {
                 log("Automatic sync is disabled. Received data but did not broadcast.")
             }
         }
+    }
+
+    private func filterStorageItems(_ items: [StorageItem], clientId: String, policy: WebsiteListPolicy) -> [StorageItem] {
+        items.filter { item in
+            let origin = item.origin.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+            let host = URL(string: origin)?.host ?? origin
+            let cleanHost = host.starts(with: ".") ? String(host.dropFirst()) : host
+
+            let siteMatch = settings.websiteSettings.first { site in
+                let listed = site.domain.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !listed.isEmpty else { return false }
+                let cleanListed = listed.starts(with: ".") ? String(listed.dropFirst()) : listed
+                return cleanHost == cleanListed || cleanHost.hasSuffix("." + cleanListed) || cleanListed.hasSuffix("." + cleanHost)
+            }
+            let isListed = siteMatch != nil
+
+            if policy == .allowList && !isListed { return false }
+            if policy == .blockList && isListed { return false }
+
+            let strategy = siteMatch?.strategy ?? settings.browserDataSyncStrategy
+            if strategy == .primaryWins {
+                let source = siteMatch?.sourceBrowser ?? settings.stateSourceBrowser
+                if !clientId.lowercased().starts(with: source.rawValue.lowercased()) {
+                    return false // Drop because this client is not the primary source
+                }
+            }
+            return true
+        }
+    }
+
+    private func filterCookies(_ cookies: [SyncCookie], clientId: String, policy: WebsiteListPolicy) -> [SyncCookie] {
+        cookies.filter { cookie in
+            let domain = cookie.domain.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+            let cleanDomain = domain.starts(with: ".") ? String(domain.dropFirst()) : domain
+
+            let siteMatch = settings.websiteSettings.first { site in
+                let listed = site.domain.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+                guard !listed.isEmpty else { return false }
+                let cleanListed = listed.starts(with: ".") ? String(listed.dropFirst()) : listed
+                return cleanDomain == cleanListed || cleanDomain.hasSuffix("." + cleanListed) || cleanListed.hasSuffix("." + cleanDomain)
+            }
+            let isListed = siteMatch != nil
+
+            if policy == .allowList && !isListed { return false }
+            if policy == .blockList && isListed { return false }
+
+            let strategy = siteMatch?.strategy ?? settings.browserDataSyncStrategy
+            switch strategy {
+            case .primaryWins:
+                let source = siteMatch?.sourceBrowser ?? settings.stateSourceBrowser
+                return clientId.lowercased().starts(with: source.rawValue.lowercased())
+            case .latestWins:
+                return acceptLatestCookie(cookie, clientId: clientId)
+            case .twoWayMerge:
+                return true
+            }
+        }
+    }
+
+    private func acceptLatestCookie(_ cookie: SyncCookie, clientId: String) -> Bool {
+        let updatedAt = cookie.updatedAt ?? Date().timeIntervalSince1970 * 1000
+
+        let key = cookieVersionKey(cookie)
+        guard let current = latestCookieVersions[key] else {
+            latestCookieVersions[key] = updatedAt
+            return true
+        }
+
+        if updatedAt > current {
+            latestCookieVersions[key] = updatedAt
+            return true
+        }
+
+        log("Dropped cookie \(cookie.domain)\(cookie.path)::\(cookie.name) from [\(clientId)]: older than latest known cookie")
+        return false
+    }
+
+    private func logCookieDomains(_ cookies: [SyncCookie], clientId: String) {
+        guard !cookies.isEmpty else { return }
+        let domains = Dictionary(grouping: cookies) { cookie in
+            let domain = cookie.domain.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+            return domain.starts(with: ".") ? String(domain.dropFirst()) : domain
+        }
+        let summary = domains
+            .sorted { $0.key < $1.key }
+            .map { "\($0.key): \($0.value.count)" }
+            .joined(separator: ", ")
+        log("Accepted cookies from [\(clientId)]: \(summary)")
+
+        let githubCookies = cookies.filter { cookie in
+            cookie.domain.lowercased().contains("github.com")
+        }
+        if !githubCookies.isEmpty {
+            let details = githubCookies
+                .sorted { $0.name < $1.name }
+                .map { cookie in
+                    "\(cookie.domain)\(cookie.path)::\(cookie.name) hostOnly=\(cookie.hostOnly.map(String.init) ?? "unknown")"
+                }
+                .joined(separator: ", ")
+            log("Accepted GitHub cookie names from [\(clientId)]: \(details)")
+        }
+    }
+
+    private func cookieVersionKey(_ cookie: SyncCookie) -> String {
+        let domain = cookie.domain.lowercased().trimmingCharacters(in: .whitespacesAndNewlines)
+        let path = cookie.path.isEmpty ? "/" : cookie.path
+        return "\(domain)::\(path)::\(cookie.name)"
     }
 
     // MARK: - Persistence

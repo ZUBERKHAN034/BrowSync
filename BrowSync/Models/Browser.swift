@@ -2,6 +2,7 @@
 // BrowSync — Browser data model
 
 import Foundation
+import AppKit
 
 // MARK: - Browser
 
@@ -32,6 +33,10 @@ enum Browser: String, CaseIterable, Codable, Identifiable, Hashable {
         case .edge: return "com.microsoft.edgemac"
         case .brave: return "com.brave.Browser"
         }
+    }
+
+    var appURL: URL? {
+        NSWorkspace.shared.urlForApplication(withBundleIdentifier: bundleIdentifier)
     }
 
     var sfSymbol: String {

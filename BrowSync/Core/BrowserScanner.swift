@@ -72,7 +72,7 @@ final class BrowserScanner: ObservableObject {
             SFSafariExtensionManager.getStateOfSafariExtension(
                 withIdentifier: "com.ct106.browsync.extension"
             ) { state, error in
-                if let error {
+                if error != nil {
                     continuation.resume(returning: .extensionRequired)
                     return
                 }
@@ -95,47 +95,52 @@ final class BrowserScanner: ObservableObject {
         guard let basePath = browser.extensionBasePath else { return .extensionRequired }
 
         let libraryURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let extensionsURL = libraryURL
-            .appendingPathComponent(basePath)
-            .appendingPathComponent("Default/Extensions")
+        let browserURL = libraryURL.appendingPathComponent(basePath)
+        
+        var foundAnyDisabled = false
 
-        guard FileManager.default.fileExists(atPath: extensionsURL.path) else {
-            return .extensionRequired
+        // Scan all possible profile directories (Default, Profile 1, Profile 2, etc.)
+        if let subdirs = try? FileManager.default.contentsOfDirectory(at: browserURL, includingPropertiesForKeys: [.isDirectoryKey]) {
+            for subdir in subdirs {
+                let prefsURL = subdir.appendingPathComponent("Preferences")
+                if FileManager.default.fileExists(atPath: prefsURL.path) {
+                    // Check the Preferences file which is the ultimate source of truth
+                    if let data = try? Data(contentsOf: prefsURL),
+                       let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                       let extensions = (json["extensions"] as? [String: Any])?["settings"] as? [String: Any] {
+                        
+                        // Check if our official ID is present
+                        if let extInfo = extensions[Self.chromiumExtensionID] as? [String: Any] {
+                            let state = extInfo["state"] as? Int ?? 1
+                            if state == 1 { return .waitingConnection }
+                            foundAnyDisabled = true
+                        }
+                        
+                        // Fallback: check if ANY unpacked extension has a path containing "browsync"
+                        for (_, info) in extensions {
+                            guard let extInfo = info as? [String: Any] else { continue }
+                            let path = (extInfo["path"] as? String)?.lowercased() ?? ""
+                            let manifest = extInfo["manifest"] as? [String: Any]
+                            let name = (manifest?["name"] as? String)?.lowercased() ?? ""
+                            
+                            if path.contains("browsync") || name.contains("browsync") {
+                                let state = extInfo["state"] as? Int ?? 1
+                                if state == 1 { return .waitingConnection }
+                                foundAnyDisabled = true
+                            }
+                        }
+                    }
+                }
+
+                // If Preferences check fails, do a fallback folder scan
+                let extensionsURL = subdir.appendingPathComponent("Extensions")
+                if scanExtensionDirectory(extensionsURL) {
+                    return .waitingConnection
+                }
+            }
         }
 
-        // Check if our extension ID folder exists
-        let extensionFolder = extensionsURL.appendingPathComponent(Self.chromiumExtensionID)
-        if FileManager.default.fileExists(atPath: extensionFolder.path) {
-            // Check if enabled via Preferences (best-effort)
-            return checkChromiumExtensionEnabled(for: browser)
-        }
-
-        // Also do a broader scan for any manifest containing our extension name
-        if scanExtensionDirectory(extensionsURL) {
-            return .waitingConnection
-        }
-
-        return .extensionRequired
-    }
-
-    private func checkChromiumExtensionEnabled(for browser: Browser) -> ExtensionStatus {
-        guard let basePath = browser.extensionBasePath else { return .extensionDisabled }
-        let libraryURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first!
-        let prefsURL = libraryURL
-            .appendingPathComponent(basePath)
-            .appendingPathComponent("Default/Preferences")
-
-        guard
-            let data = try? Data(contentsOf: prefsURL),
-            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-            let extensions = (json["extensions"] as? [String: Any])?["settings"] as? [String: Any],
-            let extInfo = extensions[Self.chromiumExtensionID] as? [String: Any],
-            let state = extInfo["state"] as? Int
-        else {
-            return .waitingConnection
-        }
-        // state == 1 means enabled in Chrome's Preferences JSON
-        return state == 1 ? .waitingConnection : .extensionDisabled
+        return foundAnyDisabled ? .extensionDisabled : .extensionRequired
     }
 
     /// Scan extension directory for a manifest.json containing BrowSync's extension name

@@ -51,8 +51,10 @@ struct SyncCookie: Codable, Equatable {
     var expirationDate: Double?
     var secure: Bool
     var httpOnly: Bool
+    var hostOnly: Bool?
     var sameSite: String?
     var removed: Bool? // True if deleted
+    var updatedAt: Double? // Milliseconds since epoch, set by the browser extension when observed
 }
 
 // MARK: - History Entry
