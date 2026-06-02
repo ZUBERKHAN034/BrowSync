@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BrowSync Privacy Policy | 隐私政策</title>
+  <script>
+    (function () {
+      var lang = (navigator.language || "en").toLowerCase();
+      document.documentElement.lang = lang.indexOf("zh") === 0 ? "zh-CN" : "en";
+    })();
+  </script>
+  <style>
+    :root {
+      --bg: #f6f7fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #4b5563;
+      --line: #e5e7eb;
+      --accent: #0f766e;
+      --accent-soft: #ccfbf1;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #eff6ff 0%, var(--bg) 220px);
+      line-height: 1.65;
+    }
+
+    .wrap {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 28px 16px 64px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 28px;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.06);
+    }
+
+    h1, h2 { line-height: 1.3; margin: 0 0 12px; }
+    h1 { font-size: 28px; }
+    h2 { font-size: 20px; margin-top: 26px; }
+
+    p { margin: 10px 0; }
+    ul { margin: 8px 0 8px 20px; }
+    li { margin: 6px 0; }
+
+    .meta {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: #115e59;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .note {
+      border-left: 4px solid var(--accent);
+      background: #f0fdfa;
+      padding: 10px 12px;
+      border-radius: 6px;
+      color: #134e4a;
+      margin: 12px 0;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    .foot {
+      margin-top: 28px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .lang-block {
+      display: none;
+    }
+
+    html[lang^="zh"] .lang-zh {
+      display: block;
+    }
+
+    html:not([lang^="zh"]) .lang-en {
+      display: block;
+    }
+
+    @media (max-width: 640px) {
+      .card { padding: 20px; }
+      h1 { font-size: 24px; }
+      h2 { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <article class="card lang-block lang-en">
+      <span class="meta">Last updated: 2026-06-02</span>
+      <h1>BrowSync Extension Privacy Policy</h1>
+      <p>
+        This Privacy Policy explains how the BrowSync browser extension (for Chrome, Arc, Edge, and Brave)
+        handles data when used together with the BrowSync desktop app.
+      </p>
+
+      <h2>1. Single Purpose</h2>
+      <p>
+        The extension has one purpose: enable local cross-browser synchronization and browser routing through
+        a connection to the BrowSync desktop app on your device.
+      </p>
+
+      <h2>2. What Data Is Processed</h2>
+      <p>The extension may process the following browser data to provide synchronization features:</p>
+      <ul>
+        <li>Bookmarks</li>
+        <li>Tab state and URLs</li>
+        <li>Cookies</li>
+        <li>localStorage and sessionStorage</li>
+        <li>Extension runtime state and sync metadata stored in extension storage</li>
+      </ul>
+
+      <h2>3. How Data Is Used</h2>
+      <ul>
+        <li>Synchronize selected browser data across supported browsers on the same device.</li>
+        <li>Maintain connection state and sync task scheduling.</li>
+        <li>Apply user-configured browser routing behavior.</li>
+      </ul>
+
+      <h2>4. Data Transfer and Sharing</h2>
+      <p>
+        BrowSync extension communicates with the local BrowSync daemon at ws://127.0.0.1:62333.
+        Data is processed locally on your device.
+      </p>
+      <div class="note">
+        The extension does not send your browsing data to BrowSync cloud servers, third-party analytics services,
+        advertising networks, or data brokers.
+      </div>
+
+      <h2>5. Permissions and Why They Are Needed</h2>
+      <ul>
+        <li><strong>bookmarks</strong>: read and write bookmarks for local synchronization.</li>
+        <li><strong>tabs</strong>: read tab metadata required for tab-state sync and routing workflows.</li>
+        <li><strong>cookies</strong>: synchronize site session cookies across supported browsers locally.</li>
+        <li><strong>storage</strong>: store extension configuration, state, and sync metadata.</li>
+        <li><strong>scripting</strong>: support sync behavior where script-based page interaction is required.</li>
+        <li><strong>alarms</strong>: schedule heartbeat, reconnect, and background sync maintenance tasks.</li>
+        <li><strong>unlimitedStorage</strong>: preserve larger local sync state when needed.</li>
+        <li><strong>host permissions (&lt;all_urls&gt;)</strong>: access site storage data required for synchronization features.</li>
+      </ul>
+
+      <h2>6. Data Retention and Deletion</h2>
+      <p>
+        Extension data is stored locally on your device. You can delete this data by removing the extension and,
+        if desired, clearing BrowSync app data from your system.
+      </p>
+
+      <h2>7. Security</h2>
+      <p>
+        BrowSync is designed to minimize external data exposure by keeping sync traffic local. As with any local
+        software, device security and browser security settings remain your responsibility.
+      </p>
+
+      <h2>8. Children's Privacy</h2>
+      <p>
+        BrowSync is not directed to children under 13, and we do not knowingly collect personal data from children.
+      </p>
+
+      <h2>9. Changes to This Policy</h2>
+      <p>
+        We may update this Privacy Policy from time to time. Updated versions will be posted at the same policy URL
+        with a revised "Last updated" date.
+      </p>
+
+      <h2>10. Contact</h2>
+      <p>
+        For questions or privacy requests, please open an issue at:
+        <a href="https://github.com/chentao1006/browsync/issues">https://github.com/chentao1006/browsync/issues</a>
+      </p>
+
+      <p class="foot">
+        BrowSync Project<br />
+        Repository: <a href="https://github.com/chentao1006/browsync">https://github.com/chentao1006/browsync</a>
+      </p>
+    </article>
+
+    <article class="card lang-block lang-zh">
+      <span class="meta">最近更新：2026-06-02</span>
+      <h1>BrowSync 扩展隐私政策</h1>
+      <p>
+        本隐私政策说明 BrowSync 浏览器扩展（适用于 Chrome、Arc、Edge 和 Brave）在与
+        BrowSync 桌面应用配合使用时，如何处理相关数据。
+      </p>
+
+      <h2>1. 单一用途</h2>
+      <p>
+        该扩展只有一个用途：通过连接你设备上的 BrowSync 桌面应用，实现本地跨浏览器同步与浏览器分流。
+      </p>
+
+      <h2>2. 处理的数据类型</h2>
+      <p>为提供同步功能，扩展可能会处理以下浏览器数据：</p>
+      <ul>
+        <li>书签</li>
+        <li>标签页状态与 URL</li>
+        <li>Cookie</li>
+        <li>localStorage 和 sessionStorage</li>
+        <li>保存在扩展存储中的运行状态与同步元数据</li>
+      </ul>
+
+      <h2>3. 数据用途</h2>
+      <ul>
+        <li>在同一设备上的受支持浏览器之间同步已选择的数据。</li>
+        <li>维护连接状态与同步任务调度。</li>
+        <li>应用用户配置的浏览器分流行为。</li>
+      </ul>
+
+      <h2>4. 数据传输与共享</h2>
+      <p>
+        BrowSync 扩展通过本机 ws://127.0.0.1:62333 与本地 BrowSync 守护进程通信。
+        数据在你的设备本地处理。
+      </p>
+      <div class="note">
+        扩展不会将你的浏览数据发送到 BrowSync 云端服务器、第三方分析服务、广告网络或数据经纪商。
+      </div>
+
+      <h2>5. 权限及用途说明</h2>
+      <ul>
+        <li><strong>bookmarks</strong>：用于读取和写入书签，以支持本地同步。</li>
+        <li><strong>tabs</strong>：用于读取标签页元数据，以支持标签页状态同步和分流流程。</li>
+        <li><strong>cookies</strong>：用于在受支持浏览器之间本地同步站点会话 Cookie。</li>
+        <li><strong>storage</strong>：用于保存扩展配置、运行状态和同步元数据。</li>
+        <li><strong>scripting</strong>：用于支持需要脚本级页面交互的同步行为。</li>
+        <li><strong>alarms</strong>：用于调度心跳、重连和后台同步维护任务。</li>
+        <li><strong>unlimitedStorage</strong>：用于在需要时保存较大的本地同步状态。</li>
+        <li><strong>主机权限 (&lt;all_urls&gt;)</strong>：用于访问同步功能所需的网站存储数据。</li>
+      </ul>
+
+      <h2>6. 数据保留与删除</h2>
+      <p>
+        扩展数据保存在你的本地设备。你可以通过移除扩展，并在需要时清理 BrowSync 本地应用数据来删除相关数据。
+      </p>
+
+      <h2>7. 安全性</h2>
+      <p>
+        BrowSync 通过本地化同步通信来降低外部数据暴露风险。和所有本地软件一样，设备安全和浏览器安全设置仍需你自行维护。
+      </p>
+
+      <h2>8. 儿童隐私</h2>
+      <p>
+        BrowSync 并非面向 13 岁以下儿童，我们不会有意收集儿童个人数据。
+      </p>
+
+      <h2>9. 政策更新</h2>
+      <p>
+        我们可能会不时更新本隐私政策。更新版本会发布在同一链接，并更新“最近更新”日期。
+      </p>
+
+      <h2>10. 联系方式</h2>
+      <p>
+        如有隐私相关问题或请求，请在以下地址提交 Issue：
+        <a href="https://github.com/chentao1006/browsync/issues">https://github.com/chentao1006/browsync/issues</a>
+      </p>
+
+      <p class="foot">
+        BrowSync 项目<br />
+        仓库：<a href="https://github.com/chentao1006/browsync">https://github.com/chentao1006/browsync</a>
+      </p>
+    </article>
+  </main>
+</body>
+</html>
