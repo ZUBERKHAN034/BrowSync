@@ -9,13 +9,13 @@ enum RuleConditionField: String, CaseIterable, Codable, Identifiable {
     
     var id: String { rawValue }
     
-    var localizedName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .domain: return String(localized: "域名")
-        case .url: return String(localized: "URL")
-        case .queryString: return String(localized: "Query String")
-        case .sourceApp: return String(localized: "来源 App")
-        case .timePeriod: return String(localized: "时间段")
+        case .domain: return "Domain"
+        case .url: return "URL"
+        case .queryString: return "Query String"
+        case .sourceApp: return "Source App"
+        case .timePeriod: return "Time Period"
         }
     }
 }
@@ -27,17 +27,21 @@ enum RuleConditionOperator: String, CaseIterable, Codable, Identifiable {
     case excludes = "Excludes"
     case startsWith = "Starts With"
     case endsWith = "Ends With"
+    case matchesRegex = "Matches Regex"
+    case wildcard = "Wildcard"
     
     var id: String { rawValue }
     
-    var localizedName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .equals: return String(localized: "等于")
-        case .notEquals: return String(localized: "不等于")
-        case .contains: return String(localized: "包含")
-        case .excludes: return String(localized: "排除")
-        case .startsWith: return String(localized: "开头为")
-        case .endsWith: return String(localized: "结尾为")
+        case .equals: return "Equals"
+        case .notEquals: return "Not Equals"
+        case .contains: return "Contains"
+        case .excludes: return "Excludes"
+        case .startsWith: return "Starts With"
+        case .endsWith: return "Ends With"
+        case .matchesRegex: return "Regex Match"
+        case .wildcard: return "Wildcard Match"
         }
     }
 }
@@ -48,10 +52,10 @@ enum RuleConditionLogic: String, CaseIterable, Codable, Identifiable {
     
     var id: String { rawValue }
     
-    var localizedName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .and: return "所有条件"
-        case .or: return "任一条件"
+        case .and: return "All Conditions"
+        case .or: return "Any Condition"
         }
     }
 }
@@ -72,9 +76,9 @@ struct RuleCondition: Identifiable, Codable, Equatable {
             formatter.timeStyle = .short
             let s = startTime.map { formatter.string(from: $0) } ?? "?"
             let e = endTime.map { formatter.string(from: $0) } ?? "?"
-            return "\(field.localizedName) \(s)至\(e)"
+            return String(localized: "\(field.displayName) \(s) to \(e)")
         } else {
-            return "\(field.localizedName)\(self.operator.localizedName)\(value)"
+            return String(localized: "\(field.displayName) \(self.operator.displayName) \(value)")
         }
     }
 }
@@ -88,8 +92,8 @@ struct RouterRule: Identifiable, Codable, Equatable {
     var targetBrowserId: String? // nil means use default fallback
     
     var summaryText: String {
-        if conditions.isEmpty { return "无条件" }
-        let joinString = logic == .and ? " 且 " : " 或 "
+        if conditions.isEmpty { return String(localized: "No conditions") }
+        let joinString = logic == .and ? String(localized: " AND ") : String(localized: " OR ")
         return conditions.map { $0.summaryText }.joined(separator: joinString)
     }
     
@@ -154,6 +158,18 @@ struct RouterRule: Identifiable, Codable, Equatable {
         case .excludes: return !t.contains(v)
         case .startsWith: return t.hasPrefix(v)
         case .endsWith: return t.hasSuffix(v)
+        case .matchesRegex:
+            if let regex = try? NSRegularExpression(pattern: value, options: .caseInsensitive) {
+                return regex.firstMatch(in: target, options: [], range: NSRange(location: 0, length: target.utf16.count)) != nil
+            }
+            return false
+        case .wildcard:
+            // simple wildcard implementation mapping * to .* and ? to .
+            let pattern = "^" + value.replacingOccurrences(of: "*", with: ".*").replacingOccurrences(of: "?", with: ".") + "$"
+            if let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive) {
+                return regex.firstMatch(in: target, options: [], range: NSRange(location: 0, length: target.utf16.count)) != nil
+            }
+            return false
         }
     }
 }

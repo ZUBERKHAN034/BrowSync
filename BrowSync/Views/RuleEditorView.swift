@@ -97,6 +97,7 @@ enum InstalledAppResolver {
 
 struct RuleEditorView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
     @State var rule: RouterRule
     
     var onSave: (RouterRule) -> Void
@@ -122,7 +123,7 @@ struct RuleEditorView: View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Text("编辑规则")
+                Text(String(localized: rule.name == "New Rule" ? "New Rule Header" : "Edit Rule Header", bundle: langBundle.bundle))
                     .font(.headline)
                 Spacer()
             }
@@ -133,10 +134,10 @@ struct RuleEditorView: View {
             
             Form {
                 Section {
-                    TextField("规则名称", text: $rule.name)
+                    TextField(String(localized: "Name", bundle: langBundle.bundle), text: $rule.name)
                     
-                    Picker("目标浏览器", selection: $rule.targetBrowserId) {
-                        Text("默认浏览器").tag(String?.none)
+                    Picker(String(localized: "Target Browser", bundle: langBundle.bundle), selection: $rule.targetBrowserId) {
+                        Text(String(localized: "Default Browser", bundle: langBundle.bundle)).tag(String?.none)
                         Divider()
                         ForEach(appState.browserInfos.filter { $0.isInstalled }) { info in
                             Label {
@@ -149,17 +150,17 @@ struct RuleEditorView: View {
                     }
                 }
                 
-                Section(header: Text("匹配条件").font(.subheadline).foregroundColor(.secondary)) {
-                    Picker("满足以下", selection: $rule.logic) {
+                Section(header: Text(String(localized: "Match Conditions", bundle: langBundle.bundle)).font(.subheadline).foregroundColor(.secondary)) {
+                    Picker(String(localized: "Match Logic", bundle: langBundle.bundle), selection: $rule.logic) {
                         ForEach(RuleConditionLogic.allCases) { logic in
-                            Text(logic.localizedName).tag(logic)
+                            Text(logic.displayName).tag(logic)
                         }
                     }
                     .pickerStyle(.segmented)
                     .padding(.bottom, 8)
                     
                     if rule.conditions.isEmpty {
-                        Text("没有设置任何条件，此规则将不会生效。")
+                        Text(String(localized: "No Conditions Message", bundle: langBundle.bundle))
                             .foregroundColor(.secondary)
                             .italic()
                     }
@@ -168,7 +169,7 @@ struct RuleEditorView: View {
                         HStack {
                             ProgressView()
                                 .controlSize(.small)
-                            Text("正在加载 App 列表...")
+                            Text(String(localized: "Loading Apps", bundle: langBundle.bundle))
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -180,7 +181,7 @@ struct RuleEditorView: View {
                         }
                     }
                     
-                    Button("添加条件") {
+                    Button(String(localized: "Add Condition", bundle: langBundle.bundle)) {
                         rule.conditions.append(RuleCondition())
                     }
                     .padding(.top, 4)
@@ -192,12 +193,12 @@ struct RuleEditorView: View {
             
             // Footer
             HStack {
-                Button("取消") {
+                Button(String(localized: "Cancel", bundle: langBundle.bundle)) {
                     onCancel()
                 }
                 .keyboardShortcut(.cancelAction)
                 Spacer()
-                Button("保存") {
+                Button(String(localized: "Save", bundle: langBundle.bundle)) {
                     onSave(rule)
                 }
                 .keyboardShortcut(.defaultAction)
@@ -228,6 +229,7 @@ struct RuleEditorView: View {
 }
 
 struct ConditionRow: View {
+    @EnvironmentObject var langBundle: LanguageBundle
     @Binding var condition: RuleCondition
     var installedApps: [InstalledAppInfo]
     var onRemove: () -> Void
@@ -237,7 +239,7 @@ struct ConditionRow: View {
         HStack {
             Picker("", selection: $condition.field) {
                 ForEach(RuleConditionField.allCases) { field in
-                    Text(field.localizedName).tag(field)
+                    Text(field.displayName).tag(field)
                 }
             }
             .labelsHidden()
@@ -258,7 +260,7 @@ struct ConditionRow: View {
                 ), displayedComponents: .hourAndMinute)
                 .labelsHidden()
                 
-                Text("至")
+                Text(String(localized: "To Time", bundle: langBundle.bundle))
                 
                 DatePicker("", selection: Binding(
                     get: { condition.endTime ?? Date().addingTimeInterval(3600) },
@@ -269,11 +271,11 @@ struct ConditionRow: View {
             } else {
                 Picker("", selection: $condition.operator) {
                     if condition.field == .sourceApp {
-                        Text(RuleConditionOperator.equals.localizedName).tag(RuleConditionOperator.equals)
-                        Text(RuleConditionOperator.notEquals.localizedName).tag(RuleConditionOperator.notEquals)
+                        Text(RuleConditionOperator.equals.displayName).tag(RuleConditionOperator.equals)
+                        Text(RuleConditionOperator.notEquals.displayName).tag(RuleConditionOperator.notEquals)
                     } else {
                         ForEach(RuleConditionOperator.allCases) { op in
-                            Text(op.localizedName).tag(op)
+                            Text(op.displayName).tag(op)
                         }
                     }
                 }
@@ -284,7 +286,7 @@ struct ConditionRow: View {
                     // App picker
                     Picker("", selection: $condition.value) {
                         if condition.value.isEmpty {
-                            Text("请选择 App").tag("")
+                            Text(String(localized: "Select App", bundle: langBundle.bundle)).tag("")
                             Divider()
                         } else if !installedApps.contains(where: { $0.id == condition.value }) {
                             Text(condition.value).tag(condition.value)
@@ -314,9 +316,9 @@ struct ConditionRow: View {
                     .foregroundColor(.red)
             }
             .buttonStyle(.plain)
-            .alert("确定要删除此条件吗？", isPresented: $showingDeleteConfirmation) {
-                Button("删除", role: .destructive, action: onRemove)
-                Button("取消", role: .cancel) {}
+            .alert(String(localized: "Confirm Delete Condition", bundle: langBundle.bundle), isPresented: $showingDeleteConfirmation) {
+                Button(String(localized: "Delete Condition", bundle: langBundle.bundle), role: .destructive, action: onRemove)
+                Button(String(localized: "Cancel", bundle: langBundle.bundle), role: .cancel) {}
             }
         }
         .padding(.vertical, 2)

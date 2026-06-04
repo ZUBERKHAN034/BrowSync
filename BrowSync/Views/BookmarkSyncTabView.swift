@@ -6,6 +6,7 @@ import SwiftUI
 struct BookmarkSyncTabView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var backupService: BackupService
+    @EnvironmentObject var langBundle: LanguageBundle
     @State private var isSyncing = false
     @State private var showSuccess = false
     @State private var backupToDelete: BookmarkBackup?
@@ -25,12 +26,12 @@ struct BookmarkSyncTabView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                Text("书签同步")
+                Text(String(localized: "Bookmark Sync Title", bundle: langBundle.bundle))
                     .font(.title2.bold())
                 
                 Spacer()
                 
-                Toggle("开启书签同步", isOn: Binding(
+                Toggle(String(localized: "Enable Bookmark Sync", bundle: langBundle.bundle), isOn: Binding(
                     get: { syncSettings.enabledCategories.wrappedValue.contains(.bookmarks) },
                     set: { enabled in
                         if enabled {
@@ -55,22 +56,22 @@ struct BookmarkSyncTabView: View {
                     if isSyncing || appState.syncService.isSyncing {
                         HStack(spacing: 6) {
                             ProgressView().controlSize(.small)
-                            Text("同步中...")
+                            Text(String(localized: "Syncing...", bundle: langBundle.bundle))
                         }
                     } else if showSuccess {
-                        Label("同步完成", systemImage: "checkmark.circle.fill")
+                        Label(String(localized: "Sync Complete", bundle: langBundle.bundle), systemImage: "checkmark.circle.fill")
                     } else {
-                        Label("立即同步", systemImage: "arrow.triangle.2.circlepath")
+                        Label(String(localized: "Sync Now", bundle: langBundle.bundle), systemImage: "arrow.triangle.2.circlepath")
                     }
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(showSuccess ? .green : .accentColor)
-                .disabled(isSyncing || appState.syncService.isSyncing || showSuccess)
+                .disabled(isSyncing || appState.syncService.isSyncing || showSuccess || !syncSettings.enabledCategories.wrappedValue.contains(.bookmarks))
             }
             .padding()
 
             Form {
-                Section("参与同步的浏览器") {
+                Section(String(localized: "Participating Browsers", bundle: langBundle.bundle)) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 12) {
                             ForEach(appState.browserInfos.filter { $0.isInstalled }) { info in
@@ -104,8 +105,8 @@ struct BookmarkSyncTabView: View {
                     }
                 }
 
-                Section("同步策略选择") {
-                    Picker("默认策略", selection: syncSettings.bookmarkSyncStrategy) {
+                Section(String(localized: "Sync Strategy", bundle: langBundle.bundle)) {
+                    Picker(String(localized: "Bookmark Strategy", bundle: langBundle.bundle), selection: syncSettings.bookmarkSyncStrategy) {
                         ForEach(BookmarkSyncStrategy.allCases) { strategy in
                             Text(strategy.displayName).tag(strategy)
                         }
@@ -113,30 +114,34 @@ struct BookmarkSyncTabView: View {
                     .pickerStyle(.menu)
                 
                     if syncSettings.bookmarkSyncStrategy.wrappedValue == .oneWay {
-                        Picker("数据源浏览器", selection: syncSettings.bookmarkSourceBrowser) {
+                        Picker(String(localized: "Bookmark Source Browser", bundle: langBundle.bundle), selection: syncSettings.bookmarkSourceBrowser) {
                             ForEach(appState.browserInfos.filter { $0.isInstalled }) { info in
-                                Text(info.displayName).tag(info.browser)
+                                Label {
+                                    Text(info.displayName)
+                                } icon: {
+                                    AppIconImage(appURL: info.appURL)
+                                }
+                                .tag(info.browser)
                             }
                         }
                         .pickerStyle(.menu)
-                        
                         
                         if syncSettings.bookmarkSourceBrowser.wrappedValue == .safari && !appState.hasFullDiskAccess {
                             VStack(alignment: .leading, spacing: 10) {
                                 HStack {
                                     Image(systemName: "exclamationmark.shield.fill")
                                         .foregroundStyle(.red)
-                                    Text("无法读取 Safari 书签")
+                                    Text(String(localized: "Cannot read Safari bookmarks", bundle: langBundle.bundle))
                                         .font(.headline)
                                         .foregroundStyle(.red)
                                 }
                                 
-                                Text("由于 macOS 的隐私机制，将 Safari 作为同步源需要授予应用“完全磁盘访问权限”。否则 BrowSync 无法读取您的 Safari 书签。")
+                                Text(String(localized: "Safari privacy warning", bundle: langBundle.bundle))
                                     .font(.caption)
                                     .fixedSize(horizontal: false, vertical: true)
                                 
                                 HStack {
-                                    Button("去系统设置授权") {
+                                    Button(String(localized: "Grant in System Settings", bundle: langBundle.bundle)) {
                                         if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
                                             NSWorkspace.shared.open(url)
                                         }
@@ -144,14 +149,14 @@ struct BookmarkSyncTabView: View {
                                     .buttonStyle(.bordered)
                                     .controlSize(.small)
                                     
-                                    Button("已授权，刷新状态") {
+                                    Button(String(localized: "Already granted, refresh", bundle: langBundle.bundle)) {
                                         appState.checkFullDiskAccess()
                                     }
                                     .buttonStyle(.link)
                                     .controlSize(.small)
                                 }
                                 
-                                Text("注：授权后可能需要完全退出并重新打开 BrowSync 才能生效。")
+                                Text(String(localized: "Note restart", bundle: langBundle.bundle))
                                     .font(.system(size: 10))
                                     .foregroundStyle(.secondary)
                             }
@@ -162,7 +167,7 @@ struct BookmarkSyncTabView: View {
                         }
                     }
                     
-                    Toggle("自动同步书签", isOn: syncSettings.bookmarkAutoSync)
+                    Toggle(String(localized: "Auto Bookmark Sync", bundle: langBundle.bundle), isOn: syncSettings.bookmarkAutoSync)
                 }
                 if (syncSettings.bookmarkSyncStrategy.wrappedValue == .twoWayMerge || 
                    (syncSettings.bookmarkSyncStrategy.wrappedValue == .oneWay && syncSettings.bookmarkSourceBrowser.wrappedValue == .safari)) 
@@ -172,17 +177,17 @@ struct BookmarkSyncTabView: View {
                             HStack {
                                 Image(systemName: "exclamationmark.shield.fill")
                                     .foregroundStyle(.red)
-                                Text("无法读取 Safari 书签")
+                                Text(String(localized: "Cannot read Safari bookmarks", bundle: langBundle.bundle))
                                     .font(.headline)
                                     .foregroundStyle(.red)
                             }
                             
-                            Text("由于 macOS 的隐私机制，读取 Safari 书签需要授予应用“完全磁盘访问权限”。请前往系统设置进行授权。")
+                            Text(String(localized: "Safari privacy warning 2", bundle: langBundle.bundle))
                                 .font(.caption)
                                 .fixedSize(horizontal: false, vertical: true)
                             
                             HStack {
-                                Button("去系统设置授权") {
+                                Button(String(localized: "Grant in System Settings", bundle: langBundle.bundle)) {
                                     if let url = URL(string: "x-apple.systempreferences:com.apple.preference.security?Privacy_AllFiles") {
                                         NSWorkspace.shared.open(url)
                                     }
@@ -190,7 +195,7 @@ struct BookmarkSyncTabView: View {
                                 .buttonStyle(.bordered)
                                 .controlSize(.small)
                                 
-                                Button("已授权，刷新状态") {
+                                Button(String(localized: "Already granted, refresh", bundle: langBundle.bundle)) {
                                     appState.checkFullDiskAccess()
                                 }
                                 .buttonStyle(.link)
@@ -201,12 +206,12 @@ struct BookmarkSyncTabView: View {
                     }
                 }
                 
-                Section("同步历史与备份") {
+                Section(String(localized: "Sync History and Backups", bundle: langBundle.bundle)) {
                     if backupService.backups.isEmpty {
-                        Text("暂无备份记录")
+                        Text(String(localized: "No backups", bundle: langBundle.bundle))
                             .foregroundStyle(.secondary)
                     } else {
-                        Text("系统会自动保留最近 20 个备份。")
+                        Text(String(localized: "Backup retention note", bundle: langBundle.bundle))
                             .font(.caption)
                             .foregroundStyle(.secondary)
                         
@@ -215,14 +220,28 @@ struct BookmarkSyncTabView: View {
                                 VStack(alignment: .leading) {
                                     Text(backup.timestamp.formatted(date: .numeric, time: .shortened))
                                         .font(.headline)
-                                    Text("来源: \(backup.sourceBrowser) (\(backup.itemCount) 项)")
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
+                                    HStack(spacing: 4) {
+                                        let sourceId = backup.sourceBrowser.replacingOccurrences(of: "_before_sync", with: "").components(separatedBy: "-").first ?? backup.sourceBrowser
+                                        let browserInfo = appState.browserInfos.first(where: { $0.browser.rawValue == sourceId })
+                                        
+                                        if let browserInfo = browserInfo {
+                                            AppIconImage(appURL: browserInfo.appURL, size: 12)
+                                        } else {
+                                            Image(systemName: "app")
+                                                .resizable()
+                                                .frame(width: 12, height: 12)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        let displayName = browserInfo?.displayName ?? sourceId
+                                        Text(String(format: String(localized: "Source: %@ (%lld items)", bundle: langBundle.bundle), displayName, backup.itemCount))
+                                    }
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
                                 }
                                 
                                 Spacer()
                                 
-                                Button("恢复此版本") {
+                                Button(String(localized: "Restore this version", bundle: langBundle.bundle)) {
                                     restoreBackup(backup)
                                 }
                                 .buttonStyle(.bordered)
@@ -245,16 +264,16 @@ struct BookmarkSyncTabView: View {
             .formStyle(.grouped)
             .disabled(!syncSettings.enabledCategories.wrappedValue.contains(.bookmarks))
             .alert(
-                "确定要删除此备份吗？",
+                String(localized: "Confirm delete backup", bundle: langBundle.bundle),
                 isPresented: $showingDeleteConfirmation,
                 presenting: backupToDelete
             ) { backup in
-                Button("删除", role: .destructive) {
+                Button(String(localized: "Delete", bundle: langBundle.bundle), role: .destructive) {
                     backupService.deleteBackup(id: backup.id)
                 }
-                Button("取消", role: .cancel) {}
+                Button(String(localized: "Cancel", bundle: langBundle.bundle), role: .cancel) {}
             } message: { backup in
-                Text("删除后将无法恢复。")
+                Text(String(localized: "Delete backup message", bundle: langBundle.bundle))
             }
         }
     }

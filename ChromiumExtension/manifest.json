@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "BrowSync",
+  "name": "__MSG_extName__",
   "version": "1.0.0",
-  "description": "__MSG_extensionDescription__",
+  "description": "__MSG_extDescription__",
   "default_locale": "en",
 
   "background": {
@@ -26,7 +26,8 @@
     "storage",
     "scripting",
     "alarms",
-    "unlimitedStorage"
+    "unlimitedStorage",
+    "nativeMessaging"
   ],
 
   "host_permissions": [
@@ -41,7 +42,7 @@
 
   "action": {
     "default_popup": "popup/popup.html",
-    "default_title": "BrowSync",
+    "default_title": "__MSG_extName__",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",

@@ -29,10 +29,12 @@
 		89B2FBA2DA46EBD47142C310 /* NotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA75D3B7E887B29E30DDBDE /* NotificationService.swift */; };
 		8A59C788940EE276FEF49438 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2332B7DC4ABFCC9469A81DA4 /* ContentView.swift */; };
 		8A6D255C5DEC2BB106A3CC30 /* icon16.png in Resources */ = {isa = PBXBuildFile; fileRef = 1C9A4FF3AEDC9984175F2890 /* icon16.png */; };
+		8DFBC220F863CB4B7D9E8740 /* LanguageBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE5BEE879CB61212F2D3F082 /* LanguageBundle.swift */; };
 		96128DEC3156F0AB79B87436 /* popup.js in Resources */ = {isa = PBXBuildFile; fileRef = 9057E94AC94248B5CE65CF31 /* popup.js */; };
 		A2FE9A8C0FC5C40F58163D5C /* WSMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1108A1B4B7AA8CF05488F9C /* WSMessage.swift */; };
 		B2F785D247654F6B9656917F /* SyncView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82D553C4CA2861D50758366B /* SyncView.swift */; };
 		B3CA3D25584BA151347395DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5800150E203500FC40165A3D /* Assets.xcassets */; };
+		B6A2C572C0E3D28981EDFB8F /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CB4D114EFE48B307D0FB3DD6 /* InfoPlist.strings */; };
 		B73BEA26F240001A92A704D8 /* SettingsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 93D2A20D8B97836960D5A19A /* SettingsService.swift */; };
 		BB67DA47A77A3BF2BCCF408C /* background.js in Resources */ = {isa = PBXBuildFile; fileRef = 9F1C6061070A3577FA35F5EF /* background.js */; };
 		BFE57D536478C567B7922537 /* BrowSync-Promo-1280x800.png in Resources */ = {isa = PBXBuildFile; fileRef = C4B27D5A9D28D813C2D50EC6 /* BrowSync-Promo-1280x800.png */; };
@@ -71,39 +73,48 @@
 
 /* Begin PBXFileReference section */
 		005114DBA010E2061038E501 /* RouterModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterModels.swift; sourceTree = "<group>"; };
+		01878D8F3BC20991BBF106DD /* fr */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fr; path = fr.lproj/Localizable.strings; sourceTree = "<group>"; };
 		06AFD458EE98ACF03EC87C22 /* SafariWebExtensionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariWebExtensionHandler.swift; sourceTree = "<group>"; };
 		10F52E8BB62D4BA5E32CD492 /* RouterTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterTabView.swift; sourceTree = "<group>"; };
 		11E0FCE05A6FAB3580A7C607 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		1C9A4FF3AEDC9984175F2890 /* icon16.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon16.png; sourceTree = "<group>"; };
 		2332B7DC4ABFCC9469A81DA4 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2A1DD27FFC2EB5AD2E32B10B /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2AF71F0DA64453CD967B49F2 /* BrowserScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserScanner.swift; sourceTree = "<group>"; };
 		2D55AFE8190981BCBBAD8141 /* popup.html */ = {isa = PBXFileReference; lastKnownFileType = text.html; path = popup.html; sourceTree = "<group>"; };
 		3528BFE980A1D1244B97800E /* DaemonServer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DaemonServer.swift; sourceTree = "<group>"; };
 		3DC990238C2CD5EC343B5DF5 /* SafariBookmarkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafariBookmarkService.swift; sourceTree = "<group>"; };
 		3F1B45325089C047D97D2748 /* icon48.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon48.png; sourceTree = "<group>"; };
 		3FA75D3B7E887B29E30DDBDE /* NotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationService.swift; sourceTree = "<group>"; };
+		4420759D96B938F92F687F8A /* it */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = it; path = it.lproj/Localizable.strings; sourceTree = "<group>"; };
 		46F4DE424609A3662449C730 /* BrowsersTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowsersTabView.swift; sourceTree = "<group>"; };
 		4A471324A48AEDB45FF4BA73 /* SyncModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncModels.swift; sourceTree = "<group>"; };
 		5800150E203500FC40165A3D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5E94CB565A48E6F14B1C0821 /* SyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncService.swift; sourceTree = "<group>"; };
 		705139BD1CAEFD064FC5E472 /* BrowSync.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrowSync.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		7074BA7FE8C2096FBE980EDC /* zh-Hans */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/InfoPlist.strings"; sourceTree = "<group>"; };
+		780E0CD4A6E3352284F4F212 /* ja */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ja; path = ja.lproj/Localizable.strings; sourceTree = "<group>"; };
 		82D553C4CA2861D50758366B /* SyncView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncView.swift; sourceTree = "<group>"; };
 		8449AE30421FC5A59FC77934 /* GeneralView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralView.swift; sourceTree = "<group>"; };
 		9057E94AC94248B5CE65CF31 /* popup.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = popup.js; sourceTree = "<group>"; };
 		91206874B5D1B45C9D05A911 /* AppConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfig.swift; sourceTree = "<group>"; };
 		93D2A20D8B97836960D5A19A /* SettingsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsService.swift; sourceTree = "<group>"; };
+		941D195193674655AB6224B9 /* es */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = es; path = es.lproj/Localizable.strings; sourceTree = "<group>"; };
 		9F1C6061070A3577FA35F5EF /* background.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = background.js; sourceTree = "<group>"; };
 		A871D9385C69C6022679A1A6 /* StateSyncTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateSyncTabView.swift; sourceTree = "<group>"; };
 		B1108A1B4B7AA8CF05488F9C /* WSMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WSMessage.swift; sourceTree = "<group>"; };
 		B2A05B028DAF25A6087D0C8A /* icon128.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon128.png; sourceTree = "<group>"; };
 		B4F4144B8AE085C797A52208 /* BackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupService.swift; sourceTree = "<group>"; };
 		B56E2AFB07CC6CA3A5582028 /* RuleEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RuleEditorView.swift; sourceTree = "<group>"; };
+		BE5BEE879CB61212F2D3F082 /* LanguageBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LanguageBundle.swift; sourceTree = "<group>"; };
 		BFF4219B6E285A9B3E623F49 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		C137716E2FEA5232D824F358 /* Browser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Browser.swift; sourceTree = "<group>"; };
 		C4B27D5A9D28D813C2D50EC6 /* BrowSync-Promo-1280x800.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "BrowSync-Promo-1280x800.png"; sourceTree = "<group>"; };
 		C6BFEB07402A67F5BB319D14 /* BrowSyncApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowSyncApp.swift; sourceTree = "<group>"; };
 		C92E6B86E06DBA3FAF458AA8 /* content.js */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.javascript; path = content.js; sourceTree = "<group>"; };
 		D8BE9255117735690255AB52 /* BrowSyncExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = BrowSyncExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		E2B2655588572D19F7C9C320 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/Localizable.strings; sourceTree = "<group>"; };
+		E2FD2DF94C950BFDAE9F1FFC /* en */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		E315605267BB5B97A246FF33 /* manifest.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = manifest.json; sourceTree = "<group>"; };
 		EBE3A33AF5716E66F9B37B38 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		FD017512DDEC9AE8140DEF5A /* BookmarkSyncTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookmarkSyncTabView.swift; sourceTree = "<group>"; };
@@ -176,6 +187,7 @@
 				5800150E203500FC40165A3D /* Assets.xcassets */,
 				2F278BFDA3B2DF653CD4E4A2 /* Localizable.strings */,
 				2D7420E5C590710BF437D49C /* Marketing */,
+				CB4D114EFE48B307D0FB3DD6 /* InfoPlist.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -276,6 +288,7 @@
 			isa = PBXGroup;
 			children = (
 				B4F4144B8AE085C797A52208 /* BackupService.swift */,
+				BE5BEE879CB61212F2D3F082 /* LanguageBundle.swift */,
 				3FA75D3B7E887B29E30DDBDE /* NotificationService.swift */,
 				3DC990238C2CD5EC343B5DF5 /* SafariBookmarkService.swift */,
 				93D2A20D8B97836960D5A19A /* SettingsService.swift */,
@@ -299,8 +312,6 @@
 			dependencies = (
 			);
 			name = BrowSyncExtension;
-			packageProductDependencies = (
-			);
 			productName = BrowSyncExtension;
 			productReference = D8BE9255117735690255AB52 /* BrowSyncExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -351,7 +362,13 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				Base,
+				de,
 				en,
+				es,
+				fr,
+				it,
+				ja,
+				ko,
 				"zh-Hans",
 			);
 			mainGroup = CDFD277E2BFDC5553C9BE04F;
@@ -393,6 +410,7 @@
 				B3CA3D25584BA151347395DA /* Assets.xcassets in Resources */,
 				BFE57D536478C567B7922537 /* BrowSync-Promo-1280x800.png in Resources */,
 				0A63D7EDCF55B55E811CB8EE /* Localizable.strings in Resources */,
+				B6A2C572C0E3D28981EDFB8F /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -414,6 +432,7 @@
 				8A59C788940EE276FEF49438 /* ContentView.swift in Sources */,
 				707821BB2B42D121080578F5 /* DaemonServer.swift in Sources */,
 				1150700A20301EFB81B57837 /* GeneralView.swift in Sources */,
+				8DFBC220F863CB4B7D9E8740 /* LanguageBundle.swift in Sources */,
 				89B2FBA2DA46EBD47142C310 /* NotificationService.swift in Sources */,
 				32705BB7B9B3DD1FAC405E50 /* RouterModels.swift in Sources */,
 				09C7E842D5114B27B18A86DB /* RouterTabView.swift in Sources */,
@@ -450,10 +469,25 @@
 		2F278BFDA3B2DF653CD4E4A2 /* Localizable.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
+				2A1DD27FFC2EB5AD2E32B10B /* de */,
 				EBE3A33AF5716E66F9B37B38 /* en */,
+				941D195193674655AB6224B9 /* es */,
+				01878D8F3BC20991BBF106DD /* fr */,
+				4420759D96B938F92F687F8A /* it */,
+				780E0CD4A6E3352284F4F212 /* ja */,
+				E2B2655588572D19F7C9C320 /* ko */,
 				11E0FCE05A6FAB3580A7C607 /* zh-Hans */,
 			);
 			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
+		CB4D114EFE48B307D0FB3DD6 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				E2FD2DF94C950BFDAE9F1FFC /* en */,
+				7074BA7FE8C2096FBE980EDC /* zh-Hans */,
+			);
+			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */

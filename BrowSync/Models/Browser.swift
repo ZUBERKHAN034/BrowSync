@@ -71,14 +71,14 @@ enum ExtensionStatus: String, Codable, Equatable {
     case connected = "connected"
     case offline = "offline"
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .notInstalled: return String(localized: "Not Installed")
-        case .extensionRequired: return String(localized: "Extension Required")
-        case .extensionDisabled: return String(localized: "Extension Disabled")
-        case .waitingConnection: return String(localized: "连接中...")
-        case .connected: return String(localized: "已连接")
-        case .offline: return String(localized: "已离线")
+        case .notInstalled: return "Not Installed"
+        case .extensionRequired: return "Extension Required"
+        case .extensionDisabled: return "Extension Disabled"
+        case .waitingConnection: return "Waiting Connection"
+        case .connected: return "Connected"
+        case .offline: return "Offline"
         }
     }
 

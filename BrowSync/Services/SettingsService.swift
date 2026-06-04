@@ -55,11 +55,11 @@ enum MenuBarMode: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .alwaysVisible: return String(localized: "Always Visible")
-        case .hideWhenConnected: return String(localized: "Hide When Connected")
-        case .hidden: return String(localized: "Hidden")
+        case .alwaysVisible: return "Always Visible"
+        case .hideWhenConnected: return "Hide When Connected"
+        case .hidden: return "Hidden"
         }
     }
 }
@@ -71,11 +71,11 @@ enum AppTheme: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .system: return String(localized: "System")
-        case .light: return String(localized: "Light")
-        case .dark: return String(localized: "Dark")
+        case .system: return "System"
+        case .light: return "Light"
+        case .dark: return "Dark"
         }
     }
 }
@@ -84,14 +84,27 @@ enum AppLanguage: String, CaseIterable, Codable, Identifiable {
     case system = "system"
     case english = "en"
     case chineseSimplified = "zh-Hans"
+    case japanese = "ja"
+    case korean = "ko"
+    case german = "de"
+    case french = "fr"
+    case italian = "it"
+    case spanish = "es"
 
     var id: String { rawValue }
 
     var displayName: String {
         switch self {
-        case .system: return String(localized: "System")
+        case .system: 
+            return String(localized: "System", bundle: LanguageBundle.systemBundle)
         case .english: return "English"
         case .chineseSimplified: return "简体中文"
+        case .japanese: return "日本語"
+        case .korean: return "한국어"
+        case .german: return "Deutsch"
+        case .french: return "Français"
+        case .italian: return "Italiano"
+        case .spanish: return "Español"
         }
     }
 }

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct RouterTabView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
     @State private var editingRule: RouterRule?
     @State private var installedApps: [InstalledAppInfo] = []
     @State private var ruleToDelete: RouterRule?
@@ -10,11 +11,11 @@ struct RouterTabView: View {
         VStack(spacing: 0) {
             // Header with Master Switch
             HStack {
-                Text("浏览器分流")
+                Text(String(localized: "Link Router", bundle: langBundle.bundle))
                     .font(.title2)
                     .fontWeight(.semibold)
                 Spacer()
-                Toggle("启用分流", isOn: $appState.isRouterEnabled)
+                Toggle(String(localized: "Enable Routing", bundle: langBundle.bundle), isOn: $appState.isRouterEnabled)
                     .toggleStyle(.switch)
             }
             .padding()
@@ -25,9 +26,9 @@ struct RouterTabView: View {
                 HStack {
                     Image(systemName: "exclamationmark.triangle.fill")
                         .foregroundColor(.yellow)
-                    Text("BrowSync 目前不是系统默认浏览器，分流功能无法完全生效。")
+                    Text(String(localized: "Not default browser warning", bundle: langBundle.bundle))
                     Spacer()
-                    Button("设为默认") {
+                    Button(String(localized: "Set as Default", bundle: langBundle.bundle)) {
                         appState.promptSetDefaultBrowser()
                     }
                 }
@@ -42,7 +43,7 @@ struct RouterTabView: View {
                     HStack {
                         Image(systemName: "arrow.uturn.right.circle.fill")
                             .foregroundColor(.secondary)
-                        Text("默认浏览器")
+                        Text(String(localized: "Default Browser", bundle: langBundle.bundle))
                             .fontWeight(.medium)
                         Spacer()
                         
@@ -85,7 +86,7 @@ struct RouterTabView: View {
                         let newRule = RouterRule()
                         editingRule = newRule
                     }) {
-                        Label("添加规则", systemImage: "plus")
+                        Label(String(localized: "Add Rule", bundle: langBundle.bundle), systemImage: "plus")
                     }
                     Spacer()
                 }
@@ -107,17 +108,18 @@ struct RouterTabView: View {
                 editingRule = nil
             }
             .environmentObject(appState)
+            .environmentObject(langBundle)
         }
-        .alert("确定要删除此分流规则吗？", isPresented: Binding(
+        .alert(String(localized: "Confirm delete router rule", bundle: langBundle.bundle), isPresented: Binding(
             get: { ruleToDelete != nil },
             set: { if !$0 { ruleToDelete = nil } }
         ), presenting: ruleToDelete) { rule in
-            Button("删除", role: .destructive) {
+            Button(String(localized: "Delete", bundle: langBundle.bundle), role: .destructive) {
                 appState.routerRules.removeAll { $0.id == rule.id }
             }
-            Button("取消", role: .cancel) {}
+            Button(String(localized: "Cancel", bundle: langBundle.bundle), role: .cancel) {}
         } message: { rule in
-            Text("删除分流规则 \"\(rule.name)\" 后将无法恢复。")
+            Text(String(format: String(localized: "Delete router rule message", bundle: langBundle.bundle), rule.name))
         }
         .onAppear {
             appState.checkDefaultBrowser()
@@ -140,6 +142,7 @@ struct RouterTabView: View {
 
 struct RouterRuleRow: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
     @Binding var rule: RouterRule
     var installedApps: [InstalledAppInfo]
     var onEdit: () -> Void
@@ -173,7 +176,7 @@ struct RouterRuleRow: View {
                         HStack(spacing: 6) {
                             Image(systemName: "arrow.uturn.right.circle")
                                 .foregroundStyle(.secondary)
-                            Text("默认")
+                            Text(String(localized: "Default (fallback)", bundle: langBundle.bundle))
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
@@ -208,14 +211,14 @@ struct RouterRuleRow: View {
     @ViewBuilder
     private var conditionSummary: some View {
         if rule.conditions.isEmpty {
-            Text("无条件")
+            Text(String(localized: "No conditions", bundle: langBundle.bundle))
                 .font(.caption)
                 .foregroundColor(.secondary)
         } else {
             HStack(spacing: 6) {
                 ForEach(Array(rule.conditions.enumerated()), id: \.element.id) { index, condition in
                     if index > 0 {
-                        Text(rule.logic == .and ? "且" : "或")
+                        Text(rule.logic == .and ? String(localized: "AND", bundle: langBundle.bundle) : String(localized: "OR", bundle: langBundle.bundle))
                             .font(.caption)
                             .foregroundStyle(.tertiary)
                     }

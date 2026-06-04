@@ -79,13 +79,13 @@ enum SyncCategory: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .bookmarks: return String(localized: "书签")
-        case .browserState: return String(localized: "浏览器状态")
-        case .browserData: return String(localized: "浏览器数据")
-        case .localStorage: return String(localized: "本地存储")
-        case .history: return String(localized: "历史记录")
+        case .bookmarks: return "Bookmarks"
+        case .browserState: return "Browser State"
+        case .browserData: return "Browser Data"
+        case .localStorage: return "Local Storage"
+        case .history: return "History"
         }
     }
 
@@ -99,18 +99,18 @@ enum SyncCategory: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    var description: String {
+    var description: LocalizedStringResource {
         switch self {
         case .bookmarks:
-            return String(localized: "书签、文件夹和收藏夹")
+            return "Bookmarks, folders, and favorites"
         case .browserState:
-            return String(localized: "当前 URL、标签页和活动标签")
+            return "Current URL, tabs, and active tab"
         case .browserData:
-            return String(localized: "Cookie、localStorage、sessionStorage")
+            return "Cookies, localStorage, sessionStorage"
         case .localStorage:
-            return String(localized: "各站点的 localStorage 数据")
+            return "localStorage data for each site"
         case .history:
-            return String(localized: "URL、标题、访问时间和次数")
+            return "URLs, titles, visit times and counts"
         }
     }
 
@@ -129,11 +129,11 @@ enum ConflictStrategy: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .primaryWins: return String(localized: "以指定源为准")
-        case .latestWins: return String(localized: "Latest Wins")
-        case .merge: return String(localized: "Merge")
+        case .primaryWins: return "Primary Wins"
+        case .latestWins: return "Latest Wins"
+        case .merge: return "Merge"
         }
     }
 }
@@ -146,10 +146,10 @@ enum BookmarkSyncStrategy: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .oneWay: return String(localized: "以指定源为主 (单向同步)")
-        case .twoWayMerge: return String(localized: "双向合并")
+        case .oneWay: return "Primary Only (One-way Sync)"
+        case .twoWayMerge: return "Two-way Merge"
         }
     }
 }
@@ -163,11 +163,11 @@ enum BrowserDataSyncStrategy: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .primaryWins: return String(localized: "以指定源为准 (单向)")
-        case .latestWins: return String(localized: "最近活动为准")
-        case .twoWayMerge: return String(localized: "双向合并")
+        case .primaryWins: return "Primary Wins (One-way)"
+        case .latestWins: return "Latest Activity Wins"
+        case .twoWayMerge: return "Two-way Merge"
         }
     }
 }
@@ -180,10 +180,10 @@ enum WebsiteListPolicy: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: String {
+    var displayName: LocalizedStringResource {
         switch self {
-        case .allowList: return String(localized: "仅同步列出的网站")
-        case .blockList: return String(localized: "排除列出的网站")
+        case .allowList: return "Only sync listed websites"
+        case .blockList: return "Exclude listed websites"
         }
     }
 }

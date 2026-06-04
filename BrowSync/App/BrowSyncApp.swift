@@ -9,15 +9,23 @@ import Sparkle
 struct BrowSyncApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var appState = AppState()
+    @StateObject private var langBundle = LanguageBundle(language: .system)
 
     var body: some Scene {
         Window("BrowSync", id: "SettingsWindow") {
             ContentView()
                 .environmentObject(appState)
+                .environmentObject(langBundle)
+                .environment(\.locale, currentLocale)
                 .frame(width: 750, height: 600)
                 .onAppear {
                     appDelegate.appState = appState
                     appDelegate.settingsWindowDidAppear()
+                    // Sync langBundle with saved language on first appear
+                    langBundle.apply(language: appState.settingsService.general.language)
+                }
+                .onChange(of: appState.settingsService.general.language) { _, newLang in
+                    langBundle.apply(language: newLang)
                 }
         }
         .windowResizability(.contentSize)
@@ -31,8 +39,19 @@ struct BrowSyncApp: App {
         MenuBarExtra("BrowSync", image: "MenuBarIcon") {
             MenuBarView()
                 .environmentObject(appState)
+                .environmentObject(langBundle)
+                .environment(\.locale, currentLocale)
         }
         .menuBarExtraStyle(.menu)
+    }
+
+    private var currentLocale: Locale {
+        let lang = appState.settingsService.general.language
+        if lang == .system {
+            return Locale(identifier: Locale.preferredLanguages.first ?? "en")
+        } else {
+            return Locale(identifier: lang.rawValue)
+        }
     }
 }
 
@@ -282,10 +301,11 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
 struct MenuBarView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        Button(String(localized: "打开同览")) {
+        Button(String(localized: "Open BrowSync", bundle: langBundle.bundle)) {
             if (NSApp.delegate as? AppDelegate)?.showExistingSettingsWindowIfPossible() != true {
                 (NSApp.delegate as? AppDelegate)?.prepareToOpenSettingsWindow()
                 openWindow(id: "SettingsWindow")
@@ -293,14 +313,14 @@ struct MenuBarView: View {
             NSApp.activate(ignoringOtherApps: true)
         }
         
-        Menu(String(localized: "立即同步")) {
-            Button(String(localized: "全部同步")) {
+        Menu(String(localized: "Sync Now", bundle: langBundle.bundle)) {
+            Button(String(localized: "Sync All", bundle: langBundle.bundle)) {
                 Task { await appState.syncAll() }
             }
-            Button(String(localized: "同步状态")) {
+            Button(String(localized: "Sync State", bundle: langBundle.bundle)) {
                 Task { await appState.sync(categories: [.browserState, .browserData, .localStorage, .history]) }
             }
-            Button(String(localized: "同步书签")) {
+            Button(String(localized: "Sync Bookmarks", bundle: langBundle.bundle)) {
                 Task { await appState.sync(categories: [.bookmarks]) }
             }
         }
@@ -310,14 +330,14 @@ struct MenuBarView: View {
         // Installed Browsers Section
         ForEach(appState.browserInfos.filter { $0.isInstalled }) { info in
             Menu {
-                Button(String(localized: "打开 \(info.displayName)")) {
+                Button(String(localized: "Open \(info.displayName)", bundle: langBundle.bundle)) {
                     if let appURL = info.appURL {
                         NSWorkspace.shared.open(appURL)
                     }
                 }
             } label: {
                 Label {
-                    Text("\(info.displayName)\(info.isDefault ? " (默认)" : "") • \(info.extensionStatus.displayName)")
+                    Text("\(info.displayName)\(info.isDefault ? " (" + String(localized: "Default", bundle: langBundle.bundle) + ")" : "") • \(info.extensionStatus.displayName)")
                 } icon: {
                     if let appURL = info.appURL {
                         Image(nsImage: NSWorkspace.shared.icon(forFile: appURL.path))
@@ -333,13 +353,13 @@ struct MenuBarView: View {
 
         // Actions Section
 
-        Button(String(localized: "检查更新...")) {
+        Button(String(localized: "Check for Updates...", bundle: langBundle.bundle)) {
             (NSApp.delegate as? AppDelegate)?.updaterController.checkForUpdates(nil)
         }
 
         Divider()
 
-        Button(String(localized: "退出")) {
+        Button(String(localized: "Quit", bundle: langBundle.bundle)) {
             NSApp.terminate(nil)
         }
     }

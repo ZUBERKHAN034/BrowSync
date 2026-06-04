@@ -136,6 +136,10 @@
 /* Menu bar */
 "Open BrowSync" = "Open BrowSync";
 "Quit" = "Quit";
+"Sync All" = "Sync All";
+"Sync State" = "Sync State";
+"Sync Bookmarks" = "Sync Bookmarks";
+"Check for Updates..." = "Check for Updates...";
 
 /* Notifications */
 "Sync Complete" = "Sync Complete";
@@ -150,3 +154,157 @@
 "AI" = "AI";
 "Entertainment" = "Entertainment";
 "Deep Focus" = "Deep Focus";
+
+/* Nav sidebar */
+"State Sync" = "State Sync";
+"Bookmark Sync" = "Bookmark Sync";
+"Link Router" = "Link Router";
+"Select an item" = "Select an item";
+
+/* BrowsersTabView */
+"Installed Browsers" = "Installed Browsers";
+"Default System" = "(System Default)";
+"Version: %@" = "Version: %@";
+"Unknown version" = "Unknown version";
+"Not participating in sync" = "Not participating in sync";
+"Sync: %@" = "Sync: %@";
+"Routing rules: %lld" = "Routing rules: %lld";
+"Connecting..." = "Connecting...";
+"Enable in Safari" = "Enable in Safari";
+"Synced: bookmarks" = "Bookmarks";
+"Synced: state" = "State";
+
+/* StateSyncTabView */
+"State Sync Title" = "State Sync";
+"Enable State Sync" = "Enable State Sync";
+"Syncing..." = "Syncing...";
+"Sync Warning Header" = "Some sites may not sync state successfully";
+"Sync Warning Reason" = "Reason:";
+"Sync Warning Reason Detail" = "Many sites use browser fingerprinting or device-bound security tokens for authentication. Due to browser security restrictions, extensions cannot extract this data, and these tokens may be invalidated in different browser environments.";
+"Sync Warning Solution" = "Solution:";
+"Sync Warning Solution Detail" = "For sites that cannot maintain login through sync, it is recommended to log in manually in each browser, or add the site to the list below and disable its state sync.";
+"Participating Browsers" = "Participating Browsers";
+"Website Options" = "Website Options";
+"Default Strategy" = "Default Strategy";
+"Data Source Browser" = "Data Source Browser";
+"Real-time Auto Sync" = "Real-time Auto Sync";
+"Website List" = "Website List";
+"Domain (e.g. apple.com)" = "Domain (e.g. apple.com)";
+"Default Policy" = "Default Policy";
+"Default Source" = "Default Source";
+"Confirm Delete Rule" = "Delete this rule?";
+"Delete" = "Delete";
+"Delete site rule message" = "Removing the custom rule for \"%@\" will revert to the global strategy.";
+
+/* BookmarkSyncTabView */
+"Bookmark Sync Title" = "Bookmark Sync";
+"Enable Bookmark Sync" = "Enable Bookmark Sync";
+"Sync Strategy" = "Sync Strategy";
+"Bookmark Strategy" = "Default Strategy";
+"Bookmark Source Browser" = "Source Browser";
+"Cannot read Safari bookmarks" = "Cannot Read Safari Bookmarks";
+"Safari privacy warning" = "Due to macOS privacy restrictions, using Safari as the sync source requires granting Full Disk Access. Without it, BrowSync cannot read your Safari bookmarks.";
+"Safari privacy warning 2" = "Due to macOS privacy restrictions, reading Safari bookmarks requires granting Full Disk Access. Please go to System Settings to authorize.";
+"Grant in System Settings" = "Open System Settings";
+"Already granted, refresh" = "Already granted, refresh";
+"Note restart" = "Note: You may need to fully quit and reopen BrowSync for this to take effect.";
+"Auto Bookmark Sync" = "Auto Sync Bookmarks";
+"Sync History and Backups" = "Sync History & Backups";
+"No backups" = "No backups yet";
+"Backup retention note" = "The system automatically keeps the most recent 20 backups.";
+"Source: %@ (%lld items)" = "Source: %@ (%lld items)";
+"Restore this version" = "Restore";
+"Confirm delete backup" = "Delete this backup?";
+"Delete backup message" = "This action cannot be undone.";
+
+/* RouterTabView */
+"Link Router" = "Link Router";
+"Enable Routing" = "Enable Routing";
+"Not default browser warning" = "BrowSync is not the default browser. Routing may not work fully.";
+"Default Browser" = "Default Browser";
+"Confirm delete router rule" = "Delete this routing rule?";
+"Delete router rule message" = "Deleting the rule \"%@\" cannot be undone.";
+"No conditions" = "No conditions";
+"AND" = "AND";
+"OR" = "OR";
+"Default (fallback)" = "Default";
+
+/* General view extra */
+"General Settings" = "General Settings";
+"Hide Window on Startup" = "Hide Window on Startup";
+"Notify on Sync Complete" = "Notify on Sync Complete";
+"Notify on Browser Connected" = "Notify on Browser Connected";
+
+/* RuleEditorView */
+"Edit Rule Header" = "Edit Rule";
+"New Rule Header" = "New Rule";
+"Rule Name Placeholder" = "e.g. Work Docs";
+"Target Browser" = "Target Browser";
+"Match Conditions" = "Match Conditions";
+"Match Logic" = "Match";
+"No Conditions Message" = "No conditions set. This rule will not apply.";
+"Loading Apps" = "Loading app list...";
+"Add Condition" = "Add Condition";
+"Select App" = "Select App";
+"Confirm Delete Condition" = "Delete this condition?";
+"Delete Condition" = "Delete";
+"To Time" = "To";
+
+/* Added missing offline */
+"Offline" = "Offline";
+
+/* Additions */
+"Latest Activity Wins" = "Latest Activity Wins";
+"List Policy" = "List Policy";
+
+/* Interpolations */
+"\(field.displayName) \(s) to \(e)" = "%1$@ %2$@ to %3$@";
+"\(field.displayName) \(self.operator.displayName) \(value)" = "%1$@ %2$@ %3$@";
+"Open \(info.displayName)" = "Open %1$@";
+" OR " = " OR ";
+" AND " = " AND ";
+
+/* Swift UI Auto Extracted */
+"View source code on GitHub" = "View source code on GitHub";
+"·" = "·";
+"BrowSync Extension" = "BrowSync Extension";
+"Open %@" = "Open %@";
+"Exclude listed websites" = "Exclude listed websites";
+"Not Equals" = "Not Equals";
+"Contains" = "Contains";
+"Two-way Merge" = "Two-way Merge";
+"BrowSyncExtension" = "BrowSyncExtension";
+"Ends With" = "Ends With";
+"Only sync listed websites" = "Only sync listed websites";
+"Local Storage" = "Local Storage";
+"All Conditions" = "All Conditions";
+"View Logs" = "View Logs";
+"Bookmark Source" = "Bookmark Source";
+"© 2026 BrowSync" = "© 2026 BrowSync";
+"Version %@ (%@)" = "Version %@ (%@)";
+"localStorage data for each site" = "localStorage data for each site";
+"Regex Match" = "Regex Match";
+"Time Period" = "Time Period";
+"%@ %@ to %@" = "%@ %@ to %@";
+"URL" = "URL";
+"Check for updates automatically" = "Check for updates automatically";
+"Removing the custom rule for \"%@\" will revert to the global strategy." = "Removing the custom rule for \"%@\" will revert to the global strategy.";
+"Equals" = "Equals";
+"Deleting the rule \"%@\" cannot be undone." = "Deleting the rule \"%@\" cannot be undone.";
+"Starts With" = "Starts With";
+"PRO" = "PRO";
+"Excludes" = "Excludes";
+"Primary Wins (One-way)" = "Primary Wins (One-way)";
+"BrowSync" = "BrowSync";
+"Domain" = "Domain";
+"Wildcard Match" = "Wildcard Match";
+"%@ %@ %@" = "%@ %@ %@";
+"%@%@ • %@" = "%@%@ • %@";
+"Primary Only (One-way Sync)" = "Primary Only (One-way Sync)";
+"Browser Data Strategy" = "Browser Data Strategy";
+"Check for Updates" = "Check for Updates";
+"Any Condition" = "Any Condition";
+"Query String" = "Query String";
+"Powered by Sparkle" = "Powered by Sparkle";
+
+"Routing Fallback" = "Routing Fallback";

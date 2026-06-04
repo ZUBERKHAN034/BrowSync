@@ -1,30 +1,29 @@
 {
-  "extensionName": {
-    "message": "BrowSync",
-    "description": "扩展名称"
+  "extName": {
+    "message": "BrowSync 同览"
   },
-  "extensionDescription": {
-    "message": "由 BrowSync 驱动的多浏览器协作工具。在 Safari、Chrome、Arc、Edge 和 Brave 之间同步书签、Cookie 和存储数据。",
-    "description": "扩展描述"
+  "extDescription": {
+    "message": "在 macOS 设备之间同步浏览器状态。"
   },
-  "connected": {
-    "message": "已连接到 BrowSync",
-    "description": "状态：已连接"
+  "appSubtitle": {
+    "message": "同览"
   },
-  "disconnected": {
-    "message": "未连接",
-    "description": "状态：未连接"
+  "statusConnecting": {
+    "message": "连接中..."
   },
-  "syncBookmarks": {
-    "message": "书签",
-    "description": "同步开关标签"
+  "statusConnected": {
+    "message": "已连接 BrowSync"
   },
-  "syncCookies": {
-    "message": "Cookie",
-    "description": "同步开关标签"
+  "statusSyncing": {
+    "message": "同步中..."
   },
-  "openApp": {
-    "message": "打开 BrowSync",
-    "description": "打开主应用的按钮"
+  "statusDisconnected": {
+    "message": "已断开连接"
+  },
+  "btnVisitWebsite": {
+    "message": "访问官网"
+  },
+  "btnOpenApp": {
+    "message": "打开核心应用"
   }
 }

@@ -6,10 +6,11 @@ import SafariServices
 
 struct BrowsersTabView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            Text("已安装的浏览器")
+            Text(String(localized: "Installed Browsers", bundle: langBundle.bundle))
                 .font(.title2.bold())
                 .padding()
 
@@ -23,6 +24,7 @@ struct BrowsersTabView: View {
 
 struct BrowserRow: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
     let info: BrowserInfo
     
     @State private var isHovering = false
@@ -49,7 +51,7 @@ struct BrowserRow: View {
                         Text(info.displayName)
                             .font(.title3.bold())
                         if info.isDefault {
-                            Text("(系统默认)")
+                            Text(String(localized: "Default System", bundle: langBundle.bundle))
                                 .font(.caption)
                                 .padding(.horizontal, 6)
                                 .padding(.vertical, 2)
@@ -59,7 +61,7 @@ struct BrowserRow: View {
                         }
                     }
                     
-                    Text("版本: \(info.version ?? "未知版本")")
+                    Text(String(format: String(localized: "Version: %@", bundle: langBundle.bundle), info.version ?? String(localized: "Unknown version", bundle: langBundle.bundle)))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                     
@@ -67,11 +69,21 @@ struct BrowserRow: View {
                     let ruleCount = getRuleCount(for: info.browser)
                     
                     HStack(spacing: 8) {
-                        Text(syncs.isEmpty ? "未参与同步" : "同步: \(syncs.joined(separator: ", "))")
+                        if syncs.isEmpty {
+                            Text(String(localized: "Not participating in sync", bundle: langBundle.bundle))
+                        } else {
+                            Text(String(format: String(localized: "Sync: %@", bundle: langBundle.bundle), syncs.joined(separator: ", ")))
+                        }
                         
                         if ruleCount > 0 {
                             Text("·")
-                            Text("分流规则: \(ruleCount)")
+                            Text(String(format: String(localized: "Routing rules: %lld", bundle: langBundle.bundle), ruleCount))
+                        }
+                        
+                        if isRoutingFallback(for: info) {
+                            Text("·")
+                            Text(String(localized: "Routing Fallback", bundle: langBundle.bundle))
+                                .foregroundStyle(.orange)
                         }
                     }
                     .font(.caption)
@@ -84,7 +96,7 @@ struct BrowserRow: View {
                     HStack(spacing: 6) {
                         ProgressView()
                             .controlSize(.small)
-                        Text("连接中...")
+                        Text(String(localized: "Connecting...", bundle: langBundle.bundle))
                             .foregroundStyle(.secondary)
                     }
                 } else if info.extensionStatus == .offline {
@@ -103,7 +115,7 @@ struct BrowserRow: View {
                     if info.extensionStatus == .notInstalled || info.extensionStatus == .extensionRequired || info.extensionStatus == .extensionDisabled {
                         // Action Buttons inline
                         if info.browser == .safari {
-                            Button("在 Safari 中启用") {
+                            Button(String(localized: "Enable in Safari", bundle: langBundle.bundle)) {
                                 if let url = info.appURL {
                                     NSWorkspace.shared.open(url)
                                 }
@@ -112,7 +124,7 @@ struct BrowserRow: View {
                             .controlSize(.small)
                             .padding(.leading, 8)
                         } else {
-                            Button("安装扩展") {
+                            Button(String(localized: "Install Extension", bundle: langBundle.bundle)) {
                                 if let url = URL(string: AppConfig.chromiumExtensionWebStoreURL) {
                                     NSWorkspace.shared.open(url)
                                 }
@@ -145,24 +157,31 @@ struct BrowserRow: View {
         let settings = appState.settingsService.syncSettings
         var s: [String] = []
         if settings.enabledCategories.contains(.bookmarks) && settings.bookmarkParticipatingBrowsers.contains(browser) {
-            s.append("书签")
+            s.append(String(localized: "Synced: bookmarks", bundle: langBundle.bundle))
         }
         if settings.enabledCategories.contains(.browserData) && settings.stateParticipatingBrowsers.contains(browser) {
-            s.append("状态")
+            s.append(String(localized: "Synced: state", bundle: langBundle.bundle))
         }
         return s
     }
     
     private func getRuleCount(for browser: Browser) -> Int {
-        let settings = appState.settingsService.syncSettings
         var count = 0
-        if settings.bookmarkSyncStrategy == .oneWay && settings.bookmarkSourceBrowser == browser {
-            count += 1
+        for rule in appState.routerRules where rule.isEnabled {
+            if rule.targetBrowserId == browser.rawValue {
+                count += 1
+            }
         }
-        if settings.browserDataSyncStrategy == .primaryWins && settings.stateSourceBrowser == browser {
-            count += 1
-        }
-        count += settings.websiteSettings.filter { $0.sourceBrowser == browser }.count
         return count
+    }
+    
+    private func isRoutingFallback(for info: BrowserInfo) -> Bool {
+        if let fallbackId = appState.fallbackBrowserId {
+            return fallbackId == info.id.rawValue
+        }
+        if appState.browserInfos.contains(where: { $0.isDefault }) {
+            return info.isDefault
+        }
+        return info.browser == .safari
     }
 }

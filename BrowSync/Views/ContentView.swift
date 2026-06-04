@@ -5,28 +5,29 @@ import SwiftUI
 
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
     @State private var selectedTab: AppTab? = .browsers
 
     var body: some View {
         NavigationSplitView {
             List(selection: $selectedTab) {
                 NavigationLink(value: AppTab.browsers) {
-                    Label("浏览器", systemImage: "safari")
+                    Label(String(localized: "Browsers", bundle: langBundle.bundle), systemImage: "safari")
                 }
                 NavigationLink(value: AppTab.stateSync) {
-                    Label("状态同步", systemImage: "arrow.triangle.2.circlepath")
+                    Label(String(localized: "State Sync", bundle: langBundle.bundle), systemImage: "arrow.triangle.2.circlepath")
                 }
                 NavigationLink(value: AppTab.bookmarkSync) {
-                    Label("书签同步", systemImage: "bookmark")
+                    Label(String(localized: "Bookmark Sync", bundle: langBundle.bundle), systemImage: "bookmark")
                 }
                 NavigationLink(value: AppTab.router) {
-                    Label("分流", systemImage: "arrow.triangle.branch")
+                    Label(String(localized: "Link Router", bundle: langBundle.bundle), systemImage: "link")
                 }
                 NavigationLink(value: AppTab.general) {
-                    Label("通用", systemImage: "gearshape")
+                    Label(String(localized: "General", bundle: langBundle.bundle), systemImage: "gearshape")
                 }
                 NavigationLink(value: AppTab.about) {
-                    Label("关于", systemImage: "info.circle")
+                    Label(String(localized: "About", bundle: langBundle.bundle), systemImage: "info.circle")
                 }
             }
             .navigationTitle("BrowSync")
@@ -48,13 +49,14 @@ struct ContentView: View {
                     AboutTabView()
                 }
             } else {
-                Text("请选择项目")
+                Text(String(localized: "Select an item", bundle: langBundle.bundle))
                     .foregroundStyle(.secondary)
             }
         }
         .task {
             await appState.onAppear()
         }
+        // Note: locale is set by BrowSyncApp via .environment(\.locale) — do NOT add another one here
     }
 }
 
@@ -66,6 +68,7 @@ enum AppTab: Hashable {
 
 struct AboutTabView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
 
     private var settings: Binding<GeneralSettings> {
         Binding(
@@ -78,7 +81,7 @@ struct AboutTabView: View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Text("关于")
+                Text(String(localized: "About", bundle: langBundle.bundle))
                     .font(.title2.bold())
                 Spacer()
             }
@@ -99,35 +102,41 @@ struct AboutTabView: View {
                                 .foregroundStyle(.blue)
                         }
                         
-                        Text("BrowSync")
+                        let appName = Bundle.main.localizedInfoDictionary?["CFBundleDisplayName"] as? String
+                            ?? Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
+                            ?? "BrowSync"
+                        
+                        Text(appName)
                             .font(.title)
                             .fontWeight(.bold)
+                            .multilineTextAlignment(.center)
                         
-                        Text("版本 \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"))")
+                        Text(String(format: String(localized: "Version %@ (%@)", bundle: langBundle.bundle),
+                                    Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0",
+                                    Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "1"))
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity)
                     .padding(.vertical)
                 }
                 
-                Section("更新") {
+                Section(String(localized: "Updates", bundle: langBundle.bundle)) {
                     HStack {
                         VStack(alignment: .leading, spacing: 2) {
-                            Toggle("自动检查更新", isOn: settings.autoUpdate)
-                            Text("由 Sparkle 提供支持")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            Toggle(String(localized: "Check for updates automatically", bundle: langBundle.bundle), isOn: settings.autoUpdate)
                         }
                     }
                     
-                    Button("检查更新") {
+                    Button(String(localized: "Check for Updates", bundle: langBundle.bundle)) {
                         (NSApp.delegate as? AppDelegate)?.updaterController.checkForUpdates(nil)
                     }
                 }
                 
-                Section("诊断") {
-                    Button("查看日志") {
+                Section(String(localized: "Diagnostics", bundle: langBundle.bundle)) {
+                    Button(String(localized: "View Logs", bundle: langBundle.bundle)) {
                         if let appSupport = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first {
                             let logsUrl = appSupport.appendingPathComponent("BrowSync/logs")
                             NSWorkspace.shared.open(logsUrl)
@@ -135,11 +144,11 @@ struct AboutTabView: View {
                     }
                 }
                 
-                Section("链接") {
+                Section(String(localized: "Links", bundle: langBundle.bundle)) {
                     Link(destination: URL(string: "https://github.com/chentao1006/browsync")!) {
                         HStack {
                             Image(systemName: "link")
-                            Text("在 GitHub 上查看源码")
+                            Text(String(localized: "View source code on GitHub", bundle: langBundle.bundle))
                         }
                     }
                 }

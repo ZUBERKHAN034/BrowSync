@@ -3,27 +3,27 @@
     "message": "BrowSync"
   },
   "extDescription": {
-    "message": "Keep your browser state in sync across macOS devices."
+    "message": "Synchronisieren Sie Ihren Browser-Status auf macOS-Geräten."
   },
   "appSubtitle": {
     "message": "Sync"
   },
   "statusConnecting": {
-    "message": "Connecting..."
+    "message": "Verbinden..."
   },
   "statusConnected": {
-    "message": "Connected to BrowSync"
+    "message": "Verbunden mit BrowSync"
   },
   "statusSyncing": {
-    "message": "Syncing..."
+    "message": "Synchronisieren..."
   },
   "statusDisconnected": {
-    "message": "Disconnected"
+    "message": "Getrennt"
   },
   "btnVisitWebsite": {
-    "message": "Visit Official Website"
+    "message": "Offizielle Website besuchen"
   },
   "btnOpenApp": {
-    "message": "Open BrowSync App"
+    "message": "App öffnen"
   }
 }

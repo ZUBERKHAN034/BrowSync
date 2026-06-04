@@ -134,6 +134,10 @@
 /* Menu bar */
 "Open BrowSync" = "打开 BrowSync";
 "Quit" = "退出";
+"Sync All" = "全部同步";
+"Sync State" = "同步状态";
+"Sync Bookmarks" = "同步书签";
+"Check for Updates..." = "检查更新...";
 
 /* Notifications */
 "Synced: %@" = "已同步：%@";
@@ -146,3 +150,186 @@
 "AI" = "AI";
 "Entertainment" = "娱乐";
 "Deep Focus" = "深度专注";
+
+/* Nav sidebar */
+"State Sync" = "状态同步";
+"Bookmark Sync" = "书签同步";
+"Link Router" = "链接分流";
+"Select an item" = "请选择一项";
+
+/* BrowsersTabView */
+"Installed Browsers" = "已安装的浏览器";
+"Default System" = "(系统默认)";
+"Version: %@" = "版本：%@";
+"Unknown version" = "未知版本";
+"Not participating in sync" = "未参与同步";
+"Sync: %@" = "同步：%@";
+"Routing rules: %lld" = "分流规则：%lld";
+"Connecting..." = "连接中...";
+"Enable in Safari" = "在 Safari 中启用";
+"Synced: bookmarks" = "书签";
+"Synced: state" = "状态";
+
+/* StateSyncTabView */
+"State Sync Title" = "状态同步";
+"Enable State Sync" = "开启状态同步";
+"Syncing..." = "同步中...";
+"Sync Warning Header" = "部分网站可能无法成功同步状态";
+"Sync Warning Reason" = "原因：";
+"Sync Warning Reason Detail" = "许多网站使用浏览器指纹或与设备绑定的安全 Token 进行验证。由于浏览器安全限制，扩展无法提取这些数据，且这些 Token 在不同浏览器环境可能被判定为无效。";
+"Sync Warning Solution" = "方案：";
+"Sync Warning Solution Detail" = "对于无法通过同步保持登录的网站，建议您在各浏览器中分别手动登录，或将该网站加入下方列表并关闭其状态同步。";
+"Participating Browsers" = "参与同步的浏览器";
+"Website Options" = "网站选项";
+"Default Strategy" = "默认策略";
+"Data Source Browser" = "数据源浏览器";
+"List Policy" = "名单模式";
+"Real-time Auto Sync" = "实时自动同步";
+"Website List" = "网站列表";
+"Domain (e.g. apple.com)" = "域名 (如: apple.com)";
+"Default Policy" = "默认策略";
+"Default Source" = "默认源";
+"Confirm Delete Rule" = "确定要删除此规则吗？";
+"Delete" = "删除";
+"Delete site rule message" = "删除网站 \"%@\" 的独立规则后将恢复使用全局策略。";
+
+/* BookmarkSyncTabView */
+"Bookmark Sync Title" = "书签同步";
+"Enable Bookmark Sync" = "开启书签同步";
+"Sync Strategy" = "同步策略选择";
+"Bookmark Strategy" = "默认策略";
+"Bookmark Source Browser" = "数据源浏览器";
+"Cannot read Safari bookmarks" = "无法读取 Safari 书签";
+"Safari privacy warning" = "由于 macOS 的隐私机制，将 Safari 作为同步源需要授予应用\"完全磁盘访问权限\"。否则 BrowSync 无法读取您的 Safari 书签。";
+"Safari privacy warning 2" = "由于 macOS 的隐私机制，读取 Safari 书签需要授予应用\"完全磁盘访问权限\"。请前往系统设置进行授权。";
+"Grant in System Settings" = "去系统设置授权";
+"Already granted, refresh" = "已授权，刷新状态";
+"Note restart" = "注：授权后可能需要完全退出并重新打开 BrowSync 才能生效。";
+"Auto Bookmark Sync" = "自动同步书签";
+"Sync History and Backups" = "同步历史与备份";
+"No backups" = "暂无备份记录";
+"Backup retention note" = "系统会自动保留最近 20 个备份。";
+"Source: %@ (%lld items)" = "来源: %@ (%lld 项)";
+"Restore this version" = "恢复此版本";
+"Confirm delete backup" = "确定要删除此备份吗？";
+"Delete backup message" = "删除后将无法恢复。";
+
+/* RouterTabView */
+"Link Router" = "链接分流";
+"Enable Routing" = "启用分流";
+"Not default browser warning" = "BrowSync 目前不是系统默认浏览器，分流功能无法完全生效。";
+"Confirm delete router rule" = "确定要删除此分流规则吗？";
+"Delete router rule message" = "删除分流规则 \"%@\" 后将无法恢复。";
+"No conditions" = "无条件";
+"AND" = "且";
+"OR" = "或";
+"Default (fallback)" = "默认";
+
+/* General view extra */
+"General Settings" = "通用设置";
+"Hide Window on Startup" = "启动时隐藏窗口";
+"Notify on Sync Complete" = "同步完成时通知";
+"Notify on Browser Connected" = "浏览器已连接时通知";
+
+/* RuleEditorView */
+"Edit Rule Header" = "编辑规则";
+"New Rule Header" = "新建规则";
+"Rule Name Placeholder" = "例如：工作文档";
+"Target Browser" = "目标浏览器";
+"Match Conditions" = "匹配条件";
+"Match Logic" = "满足以下";
+"No Conditions Message" = "没有设置任何条件，此规则将不会生效。";
+"Loading Apps" = "正在加载 App 列表...";
+"Add Condition" = "添加条件";
+"Select App" = "请选择 App";
+"Confirm Delete Condition" = "确定要删除此条件吗？";
+"Delete Condition" = "删除";
+"To Time" = "至";
+
+/* Added missing offline */
+"Offline" = "离线";
+
+/* Additions */
+"Latest Activity Wins" = "最新活动优先";
+
+/* Interpolations */
+"\(field.displayName) \(s) to \(e)" = "%1$@ 从 %2$@ 到 %3$@";
+"\(field.displayName) \(self.operator.displayName) \(value)" = "%1$@ %2$@ %3$@";
+"Open \(info.displayName)" = "打开 %1$@";
+" OR " = " 或 ";
+" AND " = " 且 ";
+
+/* Swift UI Auto Extracted */
+"View source code on GitHub" = "在 GitHub 查看源码";
+"·" = "·";
+"Reason:" = "原因：";
+"BrowSync Extension" = "BrowSync 扩展";
+"Open %@" = "打开 %@";
+"Exclude listed websites" = "排除列表中的网站";
+"Auto Sync Bookmarks" = "自动同步书签";
+"Not Equals" = "不等于";
+"Note: You may need to fully quit and reopen BrowSync for this to take effect." = "注意：您可能需要完全退出并重新打开 BrowSync 才能生效。";
+"Open System Settings" = "打开系统设置";
+"Contains" = "包含";
+"Delete this rule?" = "删除此规则？";
+"English" = "英文";
+"Two-way Merge" = "双向合并";
+"BrowSyncExtension" = "BrowSync 扩展";
+"BrowSync is not the default browser. Routing may not work fully." = "BrowSync 目前不是系统默认浏览器。分流功能可能无法完全生效。";
+"Ends With" = "以...结束";
+"Solution:" = "解决方案：";
+"Only sync listed websites" = "仅同步列表中的网站";
+"Delete this backup?" = "删除此备份？";
+"Sync History & Backups" = "同步历史与备份";
+"Restore" = "恢复";
+"Loading app list..." = "正在加载应用列表...";
+"Local Storage" = "本地存储";
+"All Conditions" = "所有条件 (且)";
+"(System Default)" = "(系统默认)";
+"View Logs" = "查看日志";
+"Bookmark Source" = "书签来源";
+"No backups yet" = "暂无备份";
+"© 2026 BrowSync" = "© 2026 BrowSync";
+"Version %@ (%@)" = "版本 %@ (%@)";
+"localStorage data for each site" = "每个网站的 localStorage 数据";
+"Some sites may not sync state successfully" = "部分网站可能无法成功同步状态";
+"This action cannot be undone." = "此操作无法撤销。";
+"Due to macOS privacy restrictions, reading Safari bookmarks requires granting Full Disk Access. Please go to System Settings to authorize." = "由于 macOS 隐私限制，读取 Safari 书签需要“完全磁盘访问权限”。请前往系统设置进行授权。";
+"The system automatically keeps the most recent 20 backups." = "系统会自动保留最近的 20 个备份。";
+"Due to macOS privacy restrictions, using Safari as the sync source requires granting Full Disk Access. Without it, BrowSync cannot read your Safari bookmarks." = "由于 macOS 隐私限制，使用 Safari 作为同步源需要“完全磁盘访问权限”。否则 BrowSync 无法读取 Safari 书签。";
+"Cannot Read Safari Bookmarks" = "无法读取 Safari 书签";
+"Regex Match" = "正则匹配";
+"No conditions set. This rule will not apply." = "未设置条件。此规则将不会生效。";
+"Time Period" = "时间段";
+"Open %1$@" = "打开 %1$@";
+"%@ %@ to %@" = "%@ %@ 到 %@";
+"Many sites use browser fingerprinting or device-bound security tokens for authentication. Due to browser security restrictions, extensions cannot extract this data, and these tokens may be invalidated in different browser environments." = "许多网站使用浏览器指纹或绑定设备的安全令牌。受限于安全机制，扩展无法提取此类数据，且这些令牌在其他浏览器中可能失效。";
+"Delete this routing rule?" = "删除此分流规则？";
+"URL" = "URL";
+"Check for updates automatically" = "自动检查更新";
+"Removing the custom rule for \"%@\" will revert to the global strategy." = "删除“%@”的自定义规则后将恢复全局策略。";
+"State" = "状态";
+"Equals" = "等于";
+"Deleting the rule \"%@\" cannot be undone." = "删除规则“%@”将无法撤销。";
+"Starts With" = "以...开始";
+"PRO" = "专业版";
+"Excludes" = "不包含";
+"Primary Wins (One-way)" = "主浏览器优先 (单向)";
+"BrowSync" = "BrowSync";
+"Domain" = "域名";
+"Wildcard Match" = "通配符匹配";
+"Source Browser" = "来源浏览器";
+"%@ %@ %@" = "%@ %@ %@";
+"Delete this condition?" = "删除此条件？";
+"%@%@ • %@" = "%@%@ • %@";
+"Match" = "匹配";
+"Primary Only (One-way Sync)" = "仅主浏览器 (单向同步)";
+"For sites that cannot maintain login through sync, it is recommended to log in manually in each browser, or add the site to the list below and disable its state sync." = "对于无法保持登录的网站，建议分别手动登录，或将其添加到下方列表并禁用状态同步。";
+"Browser Data Strategy" = "浏览器数据策略";
+"Check for Updates" = "检查更新";
+"Any Condition" = "任意条件 (或)";
+"Query String" = "查询字符串";
+"Powered by Sparkle" = "由 Sparkle 驱动";
+"%1$@ %2$@ to %3$@" = "%1$@ %2$@ 到 %3$@";
+
+"Routing Fallback" = "分流默认";

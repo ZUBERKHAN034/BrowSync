@@ -19,14 +19,14 @@ struct SyncView: View {
             // Header
             HStack {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(String(localized: "Sync"))
+                    Text("Sync")
                         .font(.title2.bold())
                     if let lastSync = appState.syncService.lastSyncDate {
-                        Text(String(localized: "Last synced \(lastSync.formatted(.relative(presentation: .named)))"))
+                        Text("Last synced \(lastSync.formatted(.relative(presentation: .named)))")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     } else {
-                        Text(String(localized: "Never synced"))
+                        Text("Never synced")
                             .font(.caption)
                             .foregroundStyle(.secondary)
                     }
@@ -45,10 +45,10 @@ struct SyncView: View {
                         HStack(spacing: 6) {
                             ProgressView()
                                 .controlSize(.small)
-                            Text(String(localized: "Syncing…"))
+                            Text("Syncing…")
                         }
                     } else {
-                        Label(String(localized: "Sync Now"), systemImage: "arrow.triangle.2.circlepath")
+                        Label("Sync Now", systemImage: "arrow.triangle.2.circlepath")
                     }
                 }
                 .buttonStyle(.borderedProminent)
@@ -62,9 +62,9 @@ struct SyncView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     // Bookmark Source Browser
-                    SettingsGroupBox(title: String(localized: "Bookmark Source Browser"),
-                                     description: String(localized: "The primary source of truth for bookmarks")) {
-                        Picker(String(localized: "Bookmark Source"), selection: syncSettings.bookmarkSourceBrowser) {
+                    SettingsGroupBox(title: "Bookmark Source Browser",
+                                     description: "The primary source of truth for bookmarks") {
+                        Picker("Bookmark Source", selection: syncSettings.bookmarkSourceBrowser) {
                             ForEach(Browser.allCases) { browser in
                                 HStack {
                                     Image(systemName: browser.sfSymbol)
@@ -77,9 +77,9 @@ struct SyncView: View {
                     }
 
                     // Bookmark Sync Strategy
-                    SettingsGroupBox(title: String(localized: "Bookmark Sync Strategy"),
-                                     description: String(localized: "How bookmarks should be synced between browsers")) {
-                        Picker(String(localized: "Bookmark Strategy"), selection: syncSettings.bookmarkSyncStrategy) {
+                    SettingsGroupBox(title: "Bookmark Sync Strategy",
+                                     description: "How bookmarks should be synced between browsers") {
+                        Picker("Bookmark Strategy", selection: syncSettings.bookmarkSyncStrategy) {
                             ForEach(BookmarkSyncStrategy.allCases) { strategy in
                                 Text(strategy.displayName).tag(strategy)
                             }
@@ -89,9 +89,9 @@ struct SyncView: View {
                     }
 
                     // Conflict Strategy
-                    SettingsGroupBox(title: String(localized: "Conflict Strategy"),
-                                     description: String(localized: "How to resolve conflicting data between browsers")) {
-                        Picker(String(localized: "Conflict Strategy"), selection: syncSettings.conflictStrategy) {
+                    SettingsGroupBox(title: "Conflict Strategy",
+                                     description: "How to resolve conflicting data between browsers") {
+                        Picker("Conflict Strategy", selection: syncSettings.conflictStrategy) {
                             ForEach(ConflictStrategy.allCases) { strategy in
                                 Text(strategy.displayName).tag(strategy)
                             }
@@ -101,9 +101,9 @@ struct SyncView: View {
                     }
 
                     // Browser Data Strategy
-                    SettingsGroupBox(title: String(localized: "Browser Data Sync Strategy"),
-                                     description: String(localized: "How to resolve conflicting cookies and local storage")) {
-                        Picker(String(localized: "Browser Data Strategy"), selection: syncSettings.browserDataSyncStrategy) {
+                    SettingsGroupBox(title: "Browser Data Sync Strategy",
+                                     description: "How to resolve conflicting cookies and local storage") {
+                        Picker("Browser Data Strategy", selection: syncSettings.browserDataSyncStrategy) {
                             ForEach(BrowserDataSyncStrategy.allCases) { strategy in
                                 Text(strategy.displayName).tag(strategy)
                             }
@@ -113,10 +113,10 @@ struct SyncView: View {
                     }
 
                     // Website Filtering
-                    SettingsGroupBox(title: String(localized: "Website Filtering"),
-                                     description: String(localized: "Control which websites to sync data for")) {
+                    SettingsGroupBox(title: "Website Filtering",
+                                     description: "Control which websites to sync data for") {
                         VStack(alignment: .leading, spacing: 12) {
-                            Picker(String(localized: "List Policy"), selection: syncSettings.websiteListPolicy) {
+                            Picker("List Policy", selection: syncSettings.websiteListPolicy) {
                                 ForEach(WebsiteListPolicy.allCases) { policy in
                                     Text(policy.displayName).tag(policy)
                                 }
@@ -127,7 +127,7 @@ struct SyncView: View {
                             Divider()
 
                             HStack {
-                                Text(String(localized: "Website List"))
+                                Text("Website List")
                                     .font(.subheadline.bold())
                                 Spacer()
                                 Button {
@@ -141,11 +141,11 @@ struct SyncView: View {
 
                             ForEach(syncSettings.websiteSettings) { $site in
                                 HStack {
-                                    TextField(String(localized: "Domain (e.g. apple.com)"), text: $site.domain)
+                                    TextField("Domain (e.g. apple.com)", text: $site.domain)
                                         .textFieldStyle(.roundedBorder)
                                     
                                     Picker("", selection: $site.strategy) {
-                                        Text(String(localized: "Default")).tag(BrowserDataSyncStrategy?.none)
+                                        Text("Default").tag(BrowserDataSyncStrategy?.none)
                                         ForEach(BrowserDataSyncStrategy.allCases) { s in
                                             Text(s.displayName).tag(BrowserDataSyncStrategy?.some(s))
                                         }
@@ -166,7 +166,7 @@ struct SyncView: View {
                     }
 
                     // Sync Categories
-                    SettingsGroupBox(title: String(localized: "What to Sync")) {
+                    SettingsGroupBox(title: "What to Sync") {
                         VStack(spacing: 0) {
                             ForEach(SyncCategory.allCases) { category in
                                 SyncCategoryRow(
@@ -190,17 +190,17 @@ struct SyncView: View {
                     }
 
                     // PRO Features
-                    SettingsGroupBox(title: String(localized: "Automatic")) {
+                    SettingsGroupBox(title: "Automatic") {
                         VStack(spacing: 0) {
                             ProFeatureRow(
-                                title: String(localized: "Automatic Sync"),
-                                description: String(localized: "Sync automatically whenever changes are detected"),
+                                title: "Automatic Sync",
+                                description: "Sync automatically whenever changes are detected",
                                 systemImage: "clock.arrow.circlepath"
                             )
                             Divider().padding(.leading, 52)
                             ProFeatureRow(
-                                title: String(localized: "iCloud Sync"),
-                                description: String(localized: "Keep sync data in iCloud across your Macs"),
+                                title: "iCloud Sync",
+                                description: "Keep sync data in iCloud across your Macs",
                                 systemImage: "icloud"
                             )
                         }
@@ -233,7 +233,7 @@ struct SyncCategoryRow: View {
                     Text(category.displayName)
                         .font(.headline)
                     if isHistoryNote {
-                        Text(String(localized: "Off by default"))
+                        Text("Off by default")
                             .font(.caption2)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)

@@ -3,6 +3,7 @@
 
 import Foundation
 import SwiftUI
+import Combine
 
 @MainActor
 final class AppState: ObservableObject {
@@ -13,6 +14,8 @@ final class AppState: ObservableObject {
     let settingsService = SettingsService()
     let notificationService = NotificationService()
     let backupService = BackupService()
+
+    private var cancellables = Set<AnyCancellable>()
 
     // Published state
     @Published var browserInfos: [BrowserInfo] = Browser.allCases.map { .placeholder(for: $0) }
@@ -57,6 +60,12 @@ final class AppState: ObservableObject {
 
         // Wire daemon delegate
         daemon.delegate = self
+        
+        settingsService.objectWillChange
+            .sink { [weak self] _ in
+                self?.objectWillChange.send()
+            }
+            .store(in: &cancellables)
         
         checkFullDiskAccess()
     }

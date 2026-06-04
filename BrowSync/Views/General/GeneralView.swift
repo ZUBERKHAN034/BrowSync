@@ -5,6 +5,7 @@ import SwiftUI
 
 struct GeneralView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
 
     private var settings: Binding<GeneralSettings> {
         Binding(
@@ -17,7 +18,7 @@ struct GeneralView: View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Text("通用设置")
+                Text(String(localized: "General Settings", bundle: langBundle.bundle))
                     .font(.title2.bold())
                 Spacer()
             }
@@ -26,24 +27,24 @@ struct GeneralView: View {
 
             Form {
                 // App behavior
-                Section("应用行为") {
-                    Toggle("登录时自动启动", isOn: Binding(
+                Section(String(localized: "App Behavior", bundle: langBundle.bundle)) {
+                    Toggle(String(localized: "Launch at Login", bundle: langBundle.bundle), isOn: Binding(
                         get: { settings.launchAtLogin.wrappedValue },
                         set: { appState.settingsService.applyLaunchAtLogin($0) }
                     ))
 
-                    Toggle("启动时隐藏窗口", isOn: settings.hideWindowOnStartup)
+                    Toggle(String(localized: "Hide Window on Startup", bundle: langBundle.bundle), isOn: settings.hideWindowOnStartup)
                 }
 
                 // Appearance
-                Section("外观") {
-                    Picker("菜单栏图标", selection: settings.menuBarMode) {
+                Section(String(localized: "Appearance", bundle: langBundle.bundle)) {
+                    Picker(String(localized: "Menu Bar Icon", bundle: langBundle.bundle), selection: settings.menuBarMode) {
                         ForEach(MenuBarMode.allCases) { mode in
                             Text(mode.displayName).tag(mode)
                         }
                     }
 
-                    Picker("主题", selection: settings.theme) {
+                    Picker(String(localized: "Theme", bundle: langBundle.bundle), selection: settings.theme) {
                         ForEach(AppTheme.allCases) { theme in
                             Text(theme.displayName).tag(theme)
                         }
@@ -54,23 +55,28 @@ struct GeneralView: View {
                 }
 
                 // Language
-                Section("语言") {
-                    Picker("语言", selection: settings.language) {
+                Section {
+                    Picker(selection: settings.language) {
                         ForEach(AppLanguage.allCases) { lang in
-                            Text(lang.displayName).tag(lang)
+                            Text(verbatim: lang.displayName).tag(lang)
                         }
+                    } label: {
+                        Text(verbatim: String(localized: "Language", bundle: LanguageBundle.systemBundle))
                     }
-                    if settings.language.wrappedValue != .system {
-                        Text("切换语言将在重启应用后生效。")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                    .onChange(of: settings.language.wrappedValue) { _, newLang in
+                        UserDefaults.standard.set(
+                            newLang == .system ? nil : [newLang.rawValue],
+                            forKey: "AppleLanguages"
+                        )
                     }
+                } header: {
+                    Text(verbatim: String(localized: "Language", bundle: LanguageBundle.systemBundle))
                 }
 
                 // Notifications
-                Section("通知") {
-                    Toggle("同步完成时发送通知", isOn: settings.notifySyncComplete)
-                    Toggle("浏览器连接时发送通知", isOn: settings.notifyBrowserConnected)
+                Section(String(localized: "Notifications", bundle: langBundle.bundle)) {
+                    Toggle(String(localized: "Notify on Sync Complete", bundle: langBundle.bundle), isOn: settings.notifySyncComplete)
+                    Toggle(String(localized: "Notify on Browser Connected", bundle: langBundle.bundle), isOn: settings.notifyBrowserConnected)
                 }
 
             }
