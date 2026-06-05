@@ -6,6 +6,10 @@
 
 [![下载 同览](https://img.shields.io/badge/同览-最新版本-blue?style=for-the-badge&logo=apple)](https://github.com/chentao1006/browsync/releases/latest)
 
+```bash
+brew install --cask chentao1006/tap/browsync
+```
+
 > [!IMPORTANT]
 > **隐私优先的设计理念**
 > 同览 (BrowSync) 基于严格的隐私优先架构构建。所有的同步和 URL 分流完全通过本地 WebSocket 守护进程在您的**本地设备上**进行。您的浏览数据（历史记录、书签、Cookie 等）**绝对不会**离开您的电脑，也不涉及任何外部服务器或云服务参与。
@@ -34,7 +38,22 @@
 | Homebrew | 最新版 |
 | XcodeGen | 2.40+ |
 
-### 2. 快速开始
+### 2. Homebrew Cask 安装
+
+您可以使用 Homebrew 安装同览 (BrowSync)：
+
+```bash
+brew install --cask chentao1006/tap/browsync
+```
+
+或者先添加 tap 仓库：
+
+```bash
+brew tap chentao1006/tap
+brew install --cask browsync
+```
+
+### 3. 源码编译构建
 
 ```bash
 # 1. 克隆仓库
@@ -53,7 +72,7 @@ open BrowSync.xcodeproj
 2. 设置您的 **Development Team**
 3. 按下 **⌘R** 编译并运行
 
-### 3. 加载 Chromium 扩展程序
+### 4. 加载 Chromium 扩展程序
 
 适用于 Chrome, Arc, Edge, 或 Brave：
 

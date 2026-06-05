@@ -6,6 +6,10 @@
 
 [![Download BrowSync](https://img.shields.io/badge/Download-Latest%20Release-blue?style=for-the-badge&logo=apple)](https://github.com/chentao1006/browsync/releases/latest)
 
+```bash
+brew install --cask chentao1006/tap/browsync
+```
+
 > [!IMPORTANT]
 > **Privacy First by Design**
 > BrowSync is built on a strict privacy-first architecture. All synchronization and URL routing happen **entirely locally** on your device via a local WebSocket daemon. Your browsing data (history, bookmarks, cookies) **never** leaves your machine, and no external servers or cloud services are involved.
@@ -34,7 +38,22 @@
 | Homebrew | Latest |
 | XcodeGen | 2.40+ |
 
-### 2. Quick Start
+### 2. Homebrew Cask
+
+You can install BrowSync with Homebrew:
+
+```bash
+brew install --cask chentao1006/tap/browsync
+```
+
+Or tap the repository first:
+
+```bash
+brew tap chentao1006/tap
+brew install --cask browsync
+```
+
+### 3. Build from Source
 
 ```bash
 # 1. Clone the repo
@@ -53,7 +72,7 @@ Then in Xcode:
 2. Set your **Development Team**
 3. Press **⌘R** to build and run
 
-### 3. Loading the Chromium Extension
+### 4. Loading the Chromium Extension
 
 For Chrome, Arc, Edge, or Brave:
 

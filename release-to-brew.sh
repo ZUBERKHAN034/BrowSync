@@ -139,8 +139,7 @@ cask "$CASK_TOKEN" do
 end
 EOF
 
-    # Since there are multiple casks, we should really append or keep the README generic if it's there.
-    # The original script just overwrites it. I will keep it simple.
+
 }
 
 run_brew_checks() {
