@@ -90,9 +90,14 @@ async function loadSettings() {
 
   if (siteSyncSection) {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (tabs.length > 0 && tabs[0].url && !tabs[0].url.startsWith('chrome') && !tabs[0].url.startsWith('about') && !tabs[0].url.startsWith('safari-extension')) {
+      const url = tabs.length > 0 ? tabs[0].url : null;
+      if (url && /^https?:/i.test(url)) {
         try {
-          let activeHostname = getBaseDomain(new URL(tabs[0].url).hostname);
+          let activeHostname = getBaseDomain(new URL(url).hostname);
+          if (!activeHostname) {
+            siteSyncSection.style.display = 'none';
+            return;
+          }
           
           siteSyncSection.style.display = 'block';
           if (siteDomainName) siteDomainName.textContent = activeHostname;
