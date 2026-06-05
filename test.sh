@@ -84,6 +84,10 @@ xattr -cr "${INSTALL_PATH}"
 echo "🚀 Launching ${APP_NAME}..."
 # Give Launch Services a moment to register the new bundle
 sleep 1
+echo "📝 Registering with LaunchServices..."
+/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -f "${INSTALL_PATH}"
+echo "🔌 Enabling Safari Extension..."
+pluginkit -e use -i "com.ct106.browsync.extension" || true
 open "${INSTALL_PATH}"
 
 echo "🎉 Installation complete!"
