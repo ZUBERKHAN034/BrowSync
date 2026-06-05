@@ -55,8 +55,10 @@ async function loadSettings() {
   if (toggleTabSharing) toggleTabSharing.checked = appSettings.tabSharingParticipatingBrowsers?.[browserId] === true;
   
   const tabSharingSection = document.getElementById('tabSharingSection');
-  if (tabSharingSection) {
-    tabSharingSection.style.display = isTabSharingEnabled ? 'block' : 'none';
+  if (tabSharingSection && !isTabSharingEnabled) {
+    // Only force-hide when tab sharing is disabled.
+    // When enabled, renderRemoteTabs() controls visibility based on actual content.
+    tabSharingSection.style.display = 'none';
   }
   
   if (btnSetRouterDefault && textIsRouterDefault) {
