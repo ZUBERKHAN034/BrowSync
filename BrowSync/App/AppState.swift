@@ -46,6 +46,7 @@ final class AppState: ObservableObject {
         didSet {
             settingsService.routerSettings.fallbackBrowserId = fallbackBrowserId
             settingsService.save()
+            broadcastSettings()
         }
     }
     @Published var isDefaultBrowser: Bool = false
@@ -278,6 +279,7 @@ extension AppState: DaemonServerDelegate {
     nonisolated func daemonServer(_ server: DaemonServer, didConnect client: ConnectedClient) {
         Task { @MainActor in
             self.updateConnectionStatus(for: client.browser, connected: true)
+            self.broadcastSettings(to: client)
         }
     }
 
@@ -295,6 +297,16 @@ extension AppState: DaemonServerDelegate {
         }
     }
     
+    nonisolated func daemonServer(_ server: DaemonServer, didReceiveOpenSettingsFrom clientId: String) {
+        Task { @MainActor in
+            if (NSApp.delegate as? AppDelegate)?.showExistingSettingsWindowIfPossible() != true {
+                (NSApp.delegate as? AppDelegate)?.prepareToOpenSettingsWindow()
+                self.openWindowAction?("SettingsWindow")
+            }
+            NSApp.activate(ignoringOtherApps: true)
+        }
+    }
+
     nonisolated func daemonServer(_ server: DaemonServer, didReceivePullBookmarks clientId: String) {
         Task { @MainActor in
             let strategy = self.settingsService.syncSettings.bookmarkSyncStrategy
@@ -338,6 +350,79 @@ extension AppState: DaemonServerDelegate {
             let sourceName = sourceBrowser == .safari ? "Safari" : "Chrome"
             self.syncService.log("Answering pull request from [\(clientId)]: Pushed \(bookmarks.count) \(sourceName) bookmarks (isFullMirror: \(msg.isFullMirror ?? false))")
             server.send(msg, toClientId: clientId)
+        }
+    }
+
+    nonisolated func daemonServer(_ server: DaemonServer, didReceiveSettings message: WSMessage, from clientId: String) {
+        Task { @MainActor in
+            guard let browserId = clientId.components(separatedBy: "-").first,
+                  let browser = Browser(rawValue: browserId),
+                  case .raw(let raw) = message.payload else { return }
+            
+            var changed = false
+            
+            if let stateSync = raw["stateSync"]?.value as? Bool {
+                if stateSync {
+                    self.settingsService.syncSettings.stateParticipatingBrowsers.insert(browser)
+                } else {
+                    self.settingsService.syncSettings.stateParticipatingBrowsers.remove(browser)
+                }
+                changed = true
+            }
+            
+            if let bookmarkSync = raw["bookmarkSync"]?.value as? Bool {
+                if bookmarkSync {
+                    self.settingsService.syncSettings.bookmarkParticipatingBrowsers.insert(browser)
+                } else {
+                    self.settingsService.syncSettings.bookmarkParticipatingBrowsers.remove(browser)
+                }
+                changed = true
+            }
+            
+            if let routerDefault = raw["routerDefault"]?.value as? Bool {
+                if routerDefault {
+                    self.fallbackBrowserId = browser.rawValue
+                }
+                changed = true
+            }
+            
+            if changed {
+                self.settingsService.save()
+                self.broadcastSettings()
+            }
+        }
+    }
+
+    func broadcastSettings(to client: ConnectedClient? = nil) {
+        let isStateSync = settingsService.syncSettings.stateParticipatingBrowsers
+        let isBookmarkSync = settingsService.syncSettings.bookmarkParticipatingBrowsers
+        let routerDefault = fallbackBrowserId
+        
+        var payload: [String: AnyCodable] = [
+            "routerDefault": AnyCodable(routerDefault ?? "")
+        ]
+        var stateMap: [String: AnyCodable] = [:]
+        for b in Browser.allCases {
+            stateMap[b.rawValue] = AnyCodable(isStateSync.contains(b))
+        }
+        var bookmarkMap: [String: AnyCodable] = [:]
+        for b in Browser.allCases {
+            bookmarkMap[b.rawValue] = AnyCodable(isBookmarkSync.contains(b))
+        }
+        payload["stateParticipatingBrowsers"] = AnyCodable(stateMap)
+        payload["bookmarkParticipatingBrowsers"] = AnyCodable(bookmarkMap)
+
+        let msg = WSMessage(
+            type: .settings,
+            payload: .raw(payload),
+            messageId: UUID().uuidString,
+            timestamp: Date().timeIntervalSince1970
+        )
+        
+        if let client = client {
+            daemon.sendWSMessage(msg, to: client)
+        } else {
+            daemon.broadcast(msg)
         }
     }
 }

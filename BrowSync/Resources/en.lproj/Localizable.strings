@@ -308,3 +308,10 @@
 "Powered by Sparkle" = "Powered by Sparkle";
 
 "Routing Fallback" = "Routing Fallback";
+
+/* Added for Menu Bar */
+"Settings..." = "Settings...";
+"Turn on Bookmark Sync" = "Turn on Bookmark Sync";
+"Turn off Bookmark Sync" = "Turn off Bookmark Sync";
+"Turn on State Sync" = "Turn on State Sync";
+"Turn off State Sync" = "Turn off State Sync";

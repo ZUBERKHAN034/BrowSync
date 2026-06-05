@@ -104,6 +104,8 @@ struct StateSyncTabView: View {
                                         } else {
                                             syncSettings.wrappedValue.stateParticipatingBrowsers.remove(info.browser)
                                         }
+                                        appState.settingsService.save()
+                                        appState.broadcastSettings()
                                     }
                                 )) {
                                     HStack(spacing: 6) {

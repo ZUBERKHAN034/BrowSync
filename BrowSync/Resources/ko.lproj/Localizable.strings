@@ -304,3 +304,10 @@
 "Any Condition" = "Any Condition";
 "Query String" = "Query String";
 "%1$@ %2$@ to %3$@" = "%1$@ %2$@ to %3$@";
+
+/* Added for Menu Bar */
+"Settings..." = "설정...";
+"Turn on Bookmark Sync" = "북마크 동기화 켜기";
+"Turn off Bookmark Sync" = "북마크 동기화 끄기";
+"Turn on State Sync" = "상태 동기화 켜기";
+"Turn off State Sync" = "상태 동기화 끄기";

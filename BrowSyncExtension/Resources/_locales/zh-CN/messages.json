@@ -12,7 +12,7 @@
     "message": "连接中..."
   },
   "statusConnected": {
-    "message": "已连接 BrowSync"
+    "message": "已连接 中枢"
   },
   "statusSyncing": {
     "message": "同步中..."
@@ -25,5 +25,23 @@
   },
   "btnOpenApp": {
     "message": "打开核心应用"
+  },
+  "settingRouterDefault": {
+    "message": "链接分流"
+  },
+  "settingBookmarkSync": {
+    "message": "Bookmark Sync"
+  },
+  "settingStateSync": {
+    "message": "State Sync"
+  },
+  "btnSetDefault": {
+    "message": "Set as Default"
+  },
+  "textIsDefault": {
+    "message": "Default Browser"
+  },
+  "btnMoreSettings": {
+    "message": "更多设置"
   }
 }

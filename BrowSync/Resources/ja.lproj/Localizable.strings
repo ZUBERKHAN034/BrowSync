@@ -304,3 +304,10 @@
 "Any Condition" = "Any Condition";
 "Query String" = "Query String";
 "%1$@ %2$@ to %3$@" = "%1$@ %2$@ to %3$@";
+
+/* Added for Menu Bar */
+"Settings..." = "設定...";
+"Turn on Bookmark Sync" = "ブックマーク同期をオンにする";
+"Turn off Bookmark Sync" = "ブックマーク同期をオフにする";
+"Turn on State Sync" = "状態同期をオンにする";
+"Turn off State Sync" = "状態同期をオフにする";

@@ -30,6 +30,8 @@ protocol DaemonServerDelegate: AnyObject {
     func daemonServer(_ server: DaemonServer, didDisconnect clientId: String, browser: Browser)
     func daemonServer(_ server: DaemonServer, didReceiveSync message: WSMessage, from clientId: String)
     func daemonServer(_ server: DaemonServer, didReceivePullBookmarks clientId: String)
+    func daemonServer(_ server: DaemonServer, didReceiveSettings message: WSMessage, from clientId: String)
+    func daemonServer(_ server: DaemonServer, didReceiveOpenSettingsFrom clientId: String)
 }
 
 // MARK: - Daemon Server
@@ -219,12 +221,15 @@ final class DaemonServer: ObservableObject {
         case .register:
             handleRegister(message, connection: connection)
 
+        case .ack:
+            break
+
         case .heartbeat:
             for (_, client) in clients where ObjectIdentifier(client.connection) == connKey {
                 client.lastSeen = Date()
                 logger.debug("Heartbeat from \(client.id)")
             }
-
+            
         case .sync:
             guard let client = clients.values.first(where: {
                 ObjectIdentifier($0.connection) == connKey
@@ -278,10 +283,24 @@ final class DaemonServer: ObservableObject {
                 }
             }
 
+        case .settings:
+            guard let client = clients.values.first(where: {
+                ObjectIdentifier($0.connection) == connKey
+            }) else { return }
+            client.lastSeen = Date()
+            delegate?.daemonServer(self, didReceiveSettings: message, from: client.id)
+            
+        case .openSettings:
+            guard let client = clients.values.first(where: {
+                ObjectIdentifier($0.connection) == connKey
+            }) else { return }
+            client.lastSeen = Date()
+            delegate?.daemonServer(self, didReceiveOpenSettingsFrom: client.id)
+            
         case .disconnect:
             removeConnection(connection)
-
-        default:
+            
+        case .error:
             break
         }
     }

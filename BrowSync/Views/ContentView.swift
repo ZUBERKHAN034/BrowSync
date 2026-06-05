@@ -14,14 +14,14 @@ struct ContentView: View {
                 NavigationLink(value: AppTab.browsers) {
                     Label(String(localized: "Browsers", bundle: langBundle.bundle), systemImage: "safari")
                 }
-                NavigationLink(value: AppTab.stateSync) {
-                    Label(String(localized: "State Sync", bundle: langBundle.bundle), systemImage: "arrow.triangle.2.circlepath")
+                NavigationLink(value: AppTab.router) {
+                    Label(String(localized: "Link Router", bundle: langBundle.bundle), systemImage: "link")
                 }
                 NavigationLink(value: AppTab.bookmarkSync) {
                     Label(String(localized: "Bookmark Sync", bundle: langBundle.bundle), systemImage: "bookmark")
                 }
-                NavigationLink(value: AppTab.router) {
-                    Label(String(localized: "Link Router", bundle: langBundle.bundle), systemImage: "link")
+                NavigationLink(value: AppTab.stateSync) {
+                    Label(String(localized: "State Sync", bundle: langBundle.bundle), systemImage: "arrow.triangle.2.circlepath")
                 }
                 NavigationLink(value: AppTab.general) {
                     Label(String(localized: "General", bundle: langBundle.bundle), systemImage: "gearshape")

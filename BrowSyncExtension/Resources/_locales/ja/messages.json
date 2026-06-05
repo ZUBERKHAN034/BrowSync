@@ -12,7 +12,7 @@
     "message": "接続中..."
   },
   "statusConnected": {
-    "message": "BrowSyncに接続済み"
+    "message": "ハブに接続済み"
   },
   "statusSyncing": {
     "message": "同期中..."
@@ -25,5 +25,23 @@
   },
   "btnOpenApp": {
     "message": "アプリを開く"
+  },
+  "settingRouterDefault": {
+    "message": "リンクルーター"
+  },
+  "settingBookmarkSync": {
+    "message": "ブックマーク同期"
+  },
+  "settingStateSync": {
+    "message": "状態の同期"
+  },
+  "btnSetDefault": {
+    "message": "デフォルトに設定"
+  },
+  "textIsDefault": {
+    "message": "デフォルトブラウザ"
+  },
+  "btnMoreSettings": {
+    "message": "詳細設定"
   }
 }

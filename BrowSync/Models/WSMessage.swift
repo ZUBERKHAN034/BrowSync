@@ -13,6 +13,8 @@ enum WSMessageType: String, Codable {
     case ack
     case error
     case disconnect
+    case settings
+    case openSettings = "open_settings"
 }
 
 // MARK: - Base Message
@@ -180,6 +182,8 @@ struct AnyCodable: Codable {
         case let v as Int: try container.encode(v)
         case let v as Double: try container.encode(v)
         case let v as String: try container.encode(v)
+        case let v as [AnyCodable]: try container.encode(v)
+        case let v as [String: AnyCodable]: try container.encode(v)
         case is NSNull: try container.encodeNil()
         default: try container.encodeNil()
         }

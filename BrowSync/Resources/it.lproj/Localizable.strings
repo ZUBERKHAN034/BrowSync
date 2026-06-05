@@ -303,3 +303,10 @@
 "Any Condition" = "Any Condition";
 "Query String" = "Query String";
 "Powered by Sparkle" = "Powered by Sparkle";
+
+/* Added for Menu Bar */
+"Settings..." = "Impostazioni...";
+"Turn on Bookmark Sync" = "Attiva sincronizzazione segnalibri";
+"Turn off Bookmark Sync" = "Disattiva sincronizzazione segnalibri";
+"Turn on State Sync" = "Attiva sincronizzazione stato";
+"Turn off State Sync" = "Disattiva sincronizzazione stato";

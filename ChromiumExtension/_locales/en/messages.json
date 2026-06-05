@@ -12,7 +12,7 @@
     "message": "Connecting..."
   },
   "statusConnected": {
-    "message": "Connected to BrowSync"
+    "message": "Connected to Hub"
   },
   "statusSyncing": {
     "message": "Syncing..."
@@ -25,5 +25,23 @@
   },
   "btnOpenApp": {
     "message": "Open BrowSync App"
+  },
+  "settingRouterDefault": {
+    "message": "Link Router"
+  },
+  "settingBookmarkSync": {
+    "message": "Bookmark Sync"
+  },
+  "settingStateSync": {
+    "message": "State Sync"
+  },
+  "btnSetDefault": {
+    "message": "Set as Default"
+  },
+  "textIsDefault": {
+    "message": "Default Browser"
+  },
+  "btnMoreSettings": {
+    "message": "More Settings"
   }
 }

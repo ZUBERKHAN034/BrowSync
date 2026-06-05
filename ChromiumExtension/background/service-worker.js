@@ -127,7 +127,9 @@ function updateBadge(state = null) {
   if (state === 'syncing') {
     chrome.action.setBadgeText({ text: 'SYNC' });
     chrome.action.setBadgeBackgroundColor({ color: '#3b82f6' });
-    chrome.action.setBadgeTextColor({ color: '#ffffff' });
+    if (chrome.action.setBadgeTextColor) {
+      try { chrome.action.setBadgeTextColor({ color: '#ffffff' }); } catch (e) {}
+    }
     setTimeout(() => updateBadge(), 2000);
     return;
   }
@@ -135,11 +137,15 @@ function updateBadge(state = null) {
   if (ws && ws.readyState === WebSocket.OPEN) {
     chrome.action.setBadgeText({ text: '' }).catch(() => {});
     chrome.action.setBadgeBackgroundColor({ color: '#22c55e' }).catch(() => {});
-    chrome.action.setBadgeTextColor({ color: '#ffffff' }).catch(() => {});
+    if (chrome.action.setBadgeTextColor) {
+      try { chrome.action.setBadgeTextColor({ color: '#ffffff' }).catch(() => {}); } catch(e) {}
+    }
   } else {
     chrome.action.setBadgeText({ text: 'OFF' }).catch(() => {});
     chrome.action.setBadgeBackgroundColor({ color: '#94a3b8' }).catch(() => {});
-    chrome.action.setBadgeTextColor({ color: '#ffffff' }).catch(() => {});
+    if (chrome.action.setBadgeTextColor) {
+      try { chrome.action.setBadgeTextColor({ color: '#ffffff' }).catch(() => {}); } catch(e) {}
+    }
   }
 }
 
@@ -162,6 +168,18 @@ async function handleIncoming(message) {
   switch (message.type) {
     case 'sync':
       await applySync(message);
+      break;
+    case 'settings':
+      if (message.payload && message.payload.kind === 'raw') {
+        const raw = message.payload.raw;
+        chrome.storage.local.get('appSettings').then(({ appSettings }) => {
+          let settings = appSettings || {};
+          if (raw.routerDefault !== undefined) settings.routerDefault = raw.routerDefault;
+          if (raw.stateParticipatingBrowsers) settings.stateParticipatingBrowsers = raw.stateParticipatingBrowsers;
+          if (raw.bookmarkParticipatingBrowsers) settings.bookmarkParticipatingBrowsers = raw.bookmarkParticipatingBrowsers;
+          chrome.storage.local.set({ appSettings: settings });
+        });
+      }
       break;
     case 'ack':
       // Acknowledged
@@ -871,6 +889,43 @@ async function applyCookieSync(cookies) {
 // ─── Content script relay (localStorage / sessionStorage) ───────────────────
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message.type === 'UPDATE_SETTING') {
+    send({
+      type: 'settings',
+      browser: DETECTED_BROWSER,
+      payload: { kind: 'raw', raw: { [message.setting]: message.value } },
+      messageId: crypto.randomUUID(),
+      timestamp: Date.now()
+    });
+    chrome.storage.local.get('appSettings').then(({ appSettings }) => {
+      let settings = appSettings || {};
+      const browserId = DETECTED_BROWSER;
+      if (message.setting === 'bookmarkSync') {
+         if (!settings.bookmarkParticipatingBrowsers) settings.bookmarkParticipatingBrowsers = {};
+         settings.bookmarkParticipatingBrowsers[browserId] = message.value;
+      } else if (message.setting === 'stateSync') {
+         if (!settings.stateParticipatingBrowsers) settings.stateParticipatingBrowsers = {};
+         settings.stateParticipatingBrowsers[browserId] = message.value;
+      } else if (message.setting === 'routerDefault' && message.value === true) {
+         settings.routerDefault = browserId;
+      }
+      chrome.storage.local.set({ appSettings: settings });
+    });
+    sendResponse({ ok: true });
+    return true;
+  }
+  
+  if (message.type === 'OPEN_SETTINGS') {
+    send({
+      type: 'open_settings',
+      browser: DETECTED_BROWSER,
+      messageId: crypto.randomUUID(),
+      timestamp: Date.now()
+    });
+    sendResponse({ ok: true });
+    return true;
+  }
+
   (async () => {
     if (message.source !== 'browsync-content') return;
     if (message.type === 'heartbeat_ping') return;

@@ -12,7 +12,7 @@
     "message": "연결 중..."
   },
   "statusConnected": {
-    "message": "BrowSync에 연결됨"
+    "message": "허브에 연결됨"
   },
   "statusSyncing": {
     "message": "동기화 중..."
@@ -25,5 +25,23 @@
   },
   "btnOpenApp": {
     "message": "앱 열기"
+  },
+  "settingRouterDefault": {
+    "message": "링크 라우터"
+  },
+  "settingBookmarkSync": {
+    "message": "북마크 동기화"
+  },
+  "settingStateSync": {
+    "message": "상태 동기화"
+  },
+  "btnSetDefault": {
+    "message": "기본값으로 설정"
+  },
+  "textIsDefault": {
+    "message": "기본 브라우저"
+  },
+  "btnMoreSettings": {
+    "message": "추가 설정"
   }
 }

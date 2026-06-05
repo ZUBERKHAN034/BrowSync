@@ -302,3 +302,10 @@
 "Check for Updates" = "Check for Updates";
 "Any Condition" = "Any Condition";
 "Query String" = "Query String";
+
+/* Added for Menu Bar */
+"Settings..." = "Einstellungen...";
+"Turn on Bookmark Sync" = "Lesezeichen-Synchronisierung aktivieren";
+"Turn off Bookmark Sync" = "Lesezeichen-Synchronisierung deaktivieren";
+"Turn on State Sync" = "Status-Synchronisierung aktivieren";
+"Turn off State Sync" = "Status-Synchronisierung deaktivieren";

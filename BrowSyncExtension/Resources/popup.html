@@ -118,23 +118,96 @@
     @supports (color: light-dark(white, black)) {
       .strategy-info { color: light-dark(#0056b3, #4facfe); }
     }
-    .footer {
+    .settings-section {
       padding: 16px;
-      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
     }
-    .open-app-btn {
-      width: 100%;
-      padding: 10px;
-      background: linear-gradient(135deg, #4facfe, #00f2fe);
-      color: #000;
-      font-weight: 600;
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
       font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+    .toggle-row input {
+      display: none;
+    }
+    .slider {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background-color: #e5e5ea;
+      border-radius: 20px;
+      transition: .4s;
+    }
+    @supports (color: light-dark(white, black)) {
+      .slider { background-color: light-dark(#e5e5ea, #39393d); }
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 2px;
+      bottom: 2px;
+      background-color: white;
+      border-radius: 50%;
+      transition: .4s;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    }
+    input:checked + .slider {
+      background-color: #34c759;
+    }
+    input:disabled + .slider {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    input:checked + .slider:before {
+      transform: translateX(16px);
+    }
+    .action-btn {
+      background: #007aff;
+      color: white;
       border: none;
-      border-radius: 8px;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 600;
       cursor: pointer;
       transition: opacity 0.2s;
     }
-    .open-app-btn:hover { opacity: 0.85; }
+    .action-btn:hover {
+      opacity: 0.8;
+    }
+    .status-text-success {
+      font-size: 12px;
+      color: #34c759;
+      font-weight: 600;
+    }
+    @supports (color: light-dark(white, black)) {
+      .action-btn { background: light-dark(#007aff, #0a84ff); }
+      .status-text-success { color: light-dark(#34c759, #30d158); }
+    }
+    
+    .btn-more {
+      width: 100%;
+      background: rgba(120, 120, 128, 0.12);
+      color: light-dark(#000, #fff);
+      border: none;
+      border-radius: 8px;
+      padding: 8px 0;
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-more:hover {
+      background: rgba(120, 120, 128, 0.2);
+    }
   </style>
 </head>
 <body>
@@ -143,7 +216,7 @@
       <div class="logo"><img src="../icons/icon48.png" width="32" height="32" alt="logo" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));"></div>
       <div>
         <div class="app-name" data-i18n="extName">BrowSync</div>
-        <div class="app-subtitle" data-i18n="appSubtitle">Sync</div>
+        <div class="app-subtitle" id="appSubtitle"></div>
       </div>
     </div>
     <div class="status-row">
@@ -152,8 +225,24 @@
     </div>
   </div>
 
-  <div class="footer">
-    <button class="open-app-btn" id="openApp" data-i18n="btnVisitWebsite">Visit Official Website</button>
+  <div class="settings-section">
+    <div class="toggle-row" id="routerDefaultContainer">
+      <span data-i18n="settingRouterDefault">Router Default</span>
+      <button id="btnSetRouterDefault" class="action-btn" data-i18n="btnSetDefault">Set as Default</button>
+      <span id="textIsRouterDefault" class="status-text-success" style="display:none;">✅ <span data-i18n="textIsDefault">Default Browser</span></span>
+    </div>
+    <label class="toggle-row">
+      <span data-i18n="settingBookmarkSync">Bookmark Sync</span>
+      <input type="checkbox" id="toggleBookmarkSync">
+      <span class="slider"></span>
+    </label>
+    <label class="toggle-row">
+      <span data-i18n="settingStateSync">State Sync</span>
+      <input type="checkbox" id="toggleStateSync">
+      <span class="slider"></span>
+    </label>
+    
+    <button id="btnMoreSettings" class="btn-more" data-i18n="btnMoreSettings">More Settings</button>
   </div>
 
   <script src="popup.js"></script>

@@ -43,7 +43,7 @@ struct GeneralSettings: Codable, Equatable {
 // MARK: - Router Settings
 
 struct RouterSettings: Codable, Equatable {
-    var isEnabled: Bool = true
+    var isEnabled: Bool = false
     var fallbackBrowserId: String? = nil
     var rules: [RouterRule] = []
 }

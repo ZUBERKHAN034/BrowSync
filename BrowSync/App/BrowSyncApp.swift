@@ -329,23 +329,25 @@ struct MenuBarView: View {
     @Environment(\.openWindow) private var openWindow
 
     var body: some View {
-        Button(String(localized: "Open BrowSync", bundle: langBundle.bundle)) {
-            if (NSApp.delegate as? AppDelegate)?.showExistingSettingsWindowIfPossible() != true {
-                (NSApp.delegate as? AppDelegate)?.prepareToOpenSettingsWindow()
-                openWindow(id: "SettingsWindow")
-            }
-            NSApp.activate(ignoringOtherApps: true)
-        }
+        let appName = Bundle.main.localizedInfoDictionary?["CFBundleDisplayName"] as? String
+            ?? Bundle.main.infoDictionary?["CFBundleDisplayName"] as? String
+            ?? "BrowSync"
+        
+        Text(appName)
+            .font(.headline)
+            .disabled(true)
+        
+        Divider()
         
         Menu(String(localized: "Sync Now", bundle: langBundle.bundle)) {
             Button(String(localized: "Sync All", bundle: langBundle.bundle)) {
                 Task { await appState.syncAll() }
             }
-            Button(String(localized: "Sync State", bundle: langBundle.bundle)) {
-                Task { await appState.sync(categories: [.browserState, .browserData, .localStorage, .history]) }
-            }
             Button(String(localized: "Sync Bookmarks", bundle: langBundle.bundle)) {
                 Task { await appState.sync(categories: [.bookmarks]) }
+            }
+            Button(String(localized: "Sync State", bundle: langBundle.bundle)) {
+                Task { await appState.sync(categories: [.browserState, .browserData, .localStorage, .history]) }
             }
         }
         
@@ -357,6 +359,55 @@ struct MenuBarView: View {
                 Button(String(localized: "Open \(info.displayName)", bundle: langBundle.bundle)) {
                     if let appURL = info.appURL {
                         NSWorkspace.shared.open(appURL)
+                    }
+                }
+                
+                Divider()
+                
+                let isRouterDefault = appState.fallbackBrowserId == info.id.rawValue
+                let isBookmarkSync = appState.settingsService.syncSettings.bookmarkParticipatingBrowsers.contains(info.id)
+                let isStateSync = appState.settingsService.syncSettings.stateParticipatingBrowsers.contains(info.id)
+                
+                Button {
+                    appState.fallbackBrowserId = info.id.rawValue
+                } label: {
+                    if isRouterDefault {
+                        Text(String(localized: "Set as Default", bundle: langBundle.bundle) + " ✓")
+                    } else {
+                        Text(String(localized: "Set as Default", bundle: langBundle.bundle))
+                    }
+                }
+                .disabled(isRouterDefault)
+                
+                Button {
+                    if isBookmarkSync {
+                        appState.settingsService.syncSettings.bookmarkParticipatingBrowsers.remove(info.id)
+                    } else {
+                        appState.settingsService.syncSettings.bookmarkParticipatingBrowsers.insert(info.id)
+                    }
+                    appState.settingsService.save()
+                    appState.broadcastSettings()
+                } label: {
+                    if isBookmarkSync {
+                        Text(String(localized: "Turn off Bookmark Sync", bundle: langBundle.bundle))
+                    } else {
+                        Text(String(localized: "Turn on Bookmark Sync", bundle: langBundle.bundle))
+                    }
+                }
+                
+                Button {
+                    if isStateSync {
+                        appState.settingsService.syncSettings.stateParticipatingBrowsers.remove(info.id)
+                    } else {
+                        appState.settingsService.syncSettings.stateParticipatingBrowsers.insert(info.id)
+                    }
+                    appState.settingsService.save()
+                    appState.broadcastSettings()
+                } label: {
+                    if isStateSync {
+                        Text(String(localized: "Turn off State Sync", bundle: langBundle.bundle))
+                    } else {
+                        Text(String(localized: "Turn on State Sync", bundle: langBundle.bundle))
                     }
                 }
             } label: {
@@ -374,8 +425,14 @@ struct MenuBarView: View {
 
         Divider()
 
-
         // Actions Section
+        Button(String(localized: "Settings...", bundle: langBundle.bundle)) {
+            if (NSApp.delegate as? AppDelegate)?.showExistingSettingsWindowIfPossible() != true {
+                (NSApp.delegate as? AppDelegate)?.prepareToOpenSettingsWindow()
+                openWindow(id: "SettingsWindow")
+            }
+            NSApp.activate(ignoringOtherApps: true)
+        }
 
         Button(String(localized: "Check for Updates...", bundle: langBundle.bundle)) {
             NSApp.activate(ignoringOtherApps: true)

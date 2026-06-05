@@ -83,6 +83,8 @@ struct BookmarkSyncTabView: View {
                                         } else {
                                             syncSettings.wrappedValue.bookmarkParticipatingBrowsers.remove(info.browser)
                                         }
+                                        appState.settingsService.save()
+                                        appState.broadcastSettings()
                                     }
                                 )) {
                                     HStack(spacing: 6) {

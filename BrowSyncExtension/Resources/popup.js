@@ -30,24 +30,76 @@ async function updateStatus() {
 updateStatus();
 setInterval(updateStatus, 1500);
 
-// ─── Safari Detection & i18n ──────────────────────────────────────────────────
+// ─── Settings ─────────────────────────────────────────────────────────────────
 
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-if (isSafari) {
-  document.getElementById('openApp')?.setAttribute('data-i18n', 'btnOpenApp');
+const toggleBookmarkSync = document.getElementById('toggleBookmarkSync');
+const toggleStateSync = document.getElementById('toggleStateSync');
+const btnSetRouterDefault = document.getElementById('btnSetRouterDefault');
+const textIsRouterDefault = document.getElementById('textIsRouterDefault');
+const btnMoreSettings = document.getElementById('btnMoreSettings');
+
+async function loadSettings() {
+  const { appSettings } = await chrome.storage.local.get('appSettings');
+  if (!appSettings) return;
+
+  const browserId = navigator.userAgent.toLowerCase().includes('safari') && !navigator.userAgent.toLowerCase().includes('chrome') ? 'safari' : 'chrome';
+
+  const isBookmarkSync = appSettings.bookmarkParticipatingBrowsers?.[browserId] === true;
+  const isStateSync = appSettings.stateParticipatingBrowsers?.[browserId] === true;
+  const isRouterDefault = appSettings.routerDefault === browserId;
+
+  if (toggleBookmarkSync) toggleBookmarkSync.checked = isBookmarkSync;
+  if (toggleStateSync) toggleStateSync.checked = isStateSync;
+  
+  if (btnSetRouterDefault && textIsRouterDefault) {
+    if (isRouterDefault) {
+      btnSetRouterDefault.style.display = 'none';
+      textIsRouterDefault.style.display = 'inline';
+    } else {
+      btnSetRouterDefault.style.display = 'inline-block';
+      textIsRouterDefault.style.display = 'none';
+    }
+  }
 }
 
-document.querySelectorAll('[data-i18n]').forEach(el => {
-  const message = chrome.i18n.getMessage(el.getAttribute('data-i18n'));
-  if (message) el.textContent = message;
-});
+if (toggleBookmarkSync) {
+  toggleBookmarkSync.addEventListener('change', (e) => {
+    chrome.runtime.sendMessage({ type: 'UPDATE_SETTING', setting: 'bookmarkSync', value: e.target.checked });
+  });
+}
 
-// ─── Open app ────────────────────────────────────────────────────────────────
+if (toggleStateSync) {
+  toggleStateSync.addEventListener('change', (e) => {
+    chrome.runtime.sendMessage({ type: 'UPDATE_SETTING', setting: 'stateSync', value: e.target.checked });
+  });
+}
 
-document.getElementById('openApp')?.addEventListener('click', () => {
-  if (isSafari) {
-    chrome.runtime.sendNativeMessage("application.id", { action: "openApp" }, (response) => {});
-  } else {
-    window.open('http://browsync.ct106.com/', '_blank');
+if (btnSetRouterDefault) {
+  btnSetRouterDefault.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'UPDATE_SETTING', setting: 'routerDefault', value: true });
+  });
+}
+
+if (btnMoreSettings) {
+  btnMoreSettings.addEventListener('click', () => {
+    chrome.runtime.sendMessage({ type: 'OPEN_SETTINGS' });
+    window.close();
+  });
+}
+
+loadSettings();
+setInterval(loadSettings, 1000);
+
+// ─── i18n ─────────────────────────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const elements = document.querySelectorAll('[data-i18n]');
+  elements.forEach(el => {
+    const msg = chrome.i18n.getMessage(el.getAttribute('data-i18n'));
+    if (msg) el.textContent = msg;
+  });
+  
+  const subtitleEl = document.getElementById('appSubtitle');
+  if (subtitleEl) {
+    subtitleEl.textContent = 'v' + chrome.runtime.getManifest().version;
   }
 });

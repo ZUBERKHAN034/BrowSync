@@ -204,16 +204,16 @@ struct SyncSettings: Codable, Equatable {
     var bookmarkSyncStrategy: BookmarkSyncStrategy = .twoWayMerge
     var bookmarkSourceBrowser: Browser = .safari
     var bookmarkAutoSync: Bool = false
-    var bookmarkParticipatingBrowsers: Set<Browser> = Set(Browser.allCases)
+    var bookmarkParticipatingBrowsers: Set<Browser> = []
     
     // Browser Data (Cookies & LocalStorage) Settings
     var browserDataSyncStrategy: BrowserDataSyncStrategy = .latestWins
     var stateSourceBrowser: Browser = .safari
-    var stateParticipatingBrowsers: Set<Browser> = Set(Browser.allCases)
+    var stateParticipatingBrowsers: Set<Browser> = []
     var websiteListPolicy: WebsiteListPolicy = .allowList
     var websiteSettings: [WebsiteSyncSetting] = []
     
-    var enabledCategories: Set<SyncCategory> = Set(SyncCategory.allCases.filter { $0.defaultEnabled })
+    var enabledCategories: Set<SyncCategory> = []
     var automaticSync: Bool = false  // PRO
     var iCloudSync: Bool = false     // PRO
 
@@ -229,13 +229,13 @@ struct SyncSettings: Codable, Equatable {
         bookmarkSyncStrategy = try container.decodeIfPresent(BookmarkSyncStrategy.self, forKey: .bookmarkSyncStrategy) ?? .twoWayMerge
         bookmarkSourceBrowser = try container.decodeIfPresent(Browser.self, forKey: .bookmarkSourceBrowser) ?? .safari
         bookmarkAutoSync = try container.decodeIfPresent(Bool.self, forKey: .bookmarkAutoSync) ?? false
-        bookmarkParticipatingBrowsers = try container.decodeIfPresent(Set<Browser>.self, forKey: .bookmarkParticipatingBrowsers) ?? Set(Browser.allCases)
+        bookmarkParticipatingBrowsers = try container.decodeIfPresent(Set<Browser>.self, forKey: .bookmarkParticipatingBrowsers) ?? []
         browserDataSyncStrategy = try container.decodeIfPresent(BrowserDataSyncStrategy.self, forKey: .browserDataSyncStrategy) ?? .latestWins
         stateSourceBrowser = try container.decodeIfPresent(Browser.self, forKey: .stateSourceBrowser) ?? .safari
-        stateParticipatingBrowsers = try container.decodeIfPresent(Set<Browser>.self, forKey: .stateParticipatingBrowsers) ?? Set(Browser.allCases)
+        stateParticipatingBrowsers = try container.decodeIfPresent(Set<Browser>.self, forKey: .stateParticipatingBrowsers) ?? []
         websiteListPolicy = try container.decodeIfPresent(WebsiteListPolicy.self, forKey: .websiteListPolicy) ?? .allowList
         websiteSettings = try container.decodeIfPresent([WebsiteSyncSetting].self, forKey: .websiteSettings) ?? []
-        enabledCategories = try container.decodeIfPresent(Set<SyncCategory>.self, forKey: .enabledCategories) ?? Set(SyncCategory.allCases.filter { $0.defaultEnabled })
+        enabledCategories = try container.decodeIfPresent(Set<SyncCategory>.self, forKey: .enabledCategories) ?? []
         automaticSync = try container.decodeIfPresent(Bool.self, forKey: .automaticSync) ?? false
         iCloudSync = try container.decodeIfPresent(Bool.self, forKey: .iCloudSync) ?? false
     }

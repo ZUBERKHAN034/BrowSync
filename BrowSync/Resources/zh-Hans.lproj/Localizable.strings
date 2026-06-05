@@ -333,3 +333,10 @@
 "%1$@ %2$@ to %3$@" = "%1$@ %2$@ 到 %3$@";
 
 "Routing Fallback" = "分流默认";
+
+/* Added for Menu Bar */
+"Settings..." = "设置...";
+"Turn on Bookmark Sync" = "打开书签同步";
+"Turn off Bookmark Sync" = "关闭书签同步";
+"Turn on State Sync" = "打开状态同步";
+"Turn off State Sync" = "关闭状态同步";

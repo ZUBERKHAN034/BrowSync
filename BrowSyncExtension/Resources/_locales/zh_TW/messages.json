@@ -1,0 +1,47 @@
+{
+  "extName": {
+    "message": "BrowSync 同覽"
+  },
+  "extDescription": {
+    "message": "在 macOS 設備之間同步瀏覽器狀態。"
+  },
+  "appSubtitle": {
+    "message": "同覽"
+  },
+  "statusConnecting": {
+    "message": "連線中..."
+  },
+  "statusConnected": {
+    "message": "已連線 中樞"
+  },
+  "statusSyncing": {
+    "message": "同步中..."
+  },
+  "statusDisconnected": {
+    "message": "已斷開連線"
+  },
+  "btnVisitWebsite": {
+    "message": "造訪官網"
+  },
+  "btnOpenApp": {
+    "message": "打開核心應用"
+  },
+  "settingRouterDefault": {
+    "message": "連結分流"
+  },
+  "settingBookmarkSync": {
+    "message": "書籤同步"
+  },
+  "settingStateSync": {
+    "message": "狀態同步"
+  },
+  "btnSetDefault": {
+    "message": "設為預設"
+  },
+  "textIsDefault": {
+    "message": "預設瀏覽器"
+  },
+  "btnMoreSettings": {
+    "message": "更多設定"
+  }
+}
