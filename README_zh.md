@@ -4,7 +4,7 @@
 
 **同览 (BrowSync)** 是一款原生 macOS 应用，旨在让 Safari、Chrome、Arc、Edge 和 Brave 协同工作。它通过本地 WebSocket 守护进程、浏览器扩展、智能 URL 分流规则以及跨浏览器数据同步，统一您的浏览体验。
 
-[![下载 同览](https://img.shields.io/badge/同览-最新版本-blue?style=for-the-badge&logo=apple)](https://github.com/chentao1006/browsync/releases/latest)
+[![下载 同览](https://img.shields.io/badge/同览-最新版本-blue?style=for-the-badge&logo=apple)](https://github.com/chentao1006/browsync/releases/latest) <a href="https://chrome.google.com/webstore/detail/nahmlhblgjnkkcmaiicngaepeepofpkh"><img src="BrowSync/Resources/Marketing/chrome-web-store-badge.png" height="28" alt="Available in the Chrome Web Store"></a>
 
 ```bash
 brew install --cask chentao1006/tap/browsync
@@ -12,7 +12,7 @@ brew install --cask chentao1006/tap/browsync
 
 > [!IMPORTANT]
 > **隐私优先的设计理念**
-> 同览 (BrowSync) 基于严格的隐私优先架构构建。所有的同步和 URL 分流完全通过本地 WebSocket 守护进程在您的**本地设备上**进行。您的浏览数据（历史记录、书签、Cookie 等）**绝对不会**离开您的电脑，也不涉及任何外部服务器或云服务参与。
+> 同览 (BrowSync) 基于严格的隐私优先架构构建。所有的同步和 URL 分流完全通过本地 WebSocket 守护进程在您的**本地设备上**进行。您的浏览数据（书签、Cookie、本地存储、活动标签页等）**绝对不会**离开您的电脑，也不涉及任何外部服务器或云服务参与。
 
 ## 🚀 核心功能
 
@@ -73,15 +73,14 @@ open BrowSync.xcodeproj
 2. 设置您的 **Development Team**
 3. 按下 **⌘R** 编译并运行
 
-### 4. 加载 Chromium 扩展程序
+### 4. 安装浏览器扩展
 
-适用于 Chrome, Arc, Edge, 或 Brave：
+**Chromium 浏览器 (Chrome, Arc, Edge, Brave)**:
+您可以直接从 Chrome 网上应用店安装同览 (BrowSync) 扩展：
+[前往 Chrome Web Store 安装](https://chrome.google.com/webstore/detail/nahmlhblgjnkkcmaiicngaepeepofpkh)
 
-1. 打开浏览器 → 访问 `chrome://extensions/`
-2. 开启右上角的 **开发者模式 (Developer Mode)**
-3. 点击 **加载已解压的扩展程序 (Load Unpacked)**
-4. 选择 `ChromiumExtension/` 文件夹
-5. BrowSync 扩展图标将出现在工具栏中。Safari 用户可以直接在 Safari 设置中启用对应的原生扩展。
+**Safari 浏览器**:
+应用内置了原生的 Safari 扩展。运行 BrowSync 应用后，您可以在 Safari 的“设置” -> “扩展”中直接启用它。
 
 ## 🔍 架构与协议
 
@@ -169,7 +168,6 @@ BrowSync 将其数据本地存储在您的 Application Support 文件夹中：
 ~/Library/Application Support/BrowSync/
 ├── sites/          # 各站点的同步状态
 ├── bookmarks/      # 同步的书签快照
-├── history/        # 历史记录 (启用时)
 ├── logs/           # sync-YYYY-MM-DD.log (同步日志)
 └── settings.json   # 所有应用设置
 ```

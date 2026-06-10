@@ -4,7 +4,7 @@
 
 **BrowSync** is a macOS native app that makes Safari, Chrome, Arc, Edge, and Brave work together. It unifies your browsing experience through a local WebSocket daemon, browser extensions, intelligent URL routing rules, and cross-browser data synchronization.
 
-[![Download BrowSync](https://img.shields.io/badge/Download-Latest%20Release-blue?style=for-the-badge&logo=apple)](https://github.com/chentao1006/browsync/releases/latest)
+[![Download BrowSync](https://img.shields.io/badge/Download-Latest%20Release-blue?style=for-the-badge&logo=apple)](https://github.com/chentao1006/browsync/releases/latest) <a href="https://chrome.google.com/webstore/detail/nahmlhblgjnkkcmaiicngaepeepofpkh"><img src="BrowSync/Resources/Marketing/chrome-web-store-badge.png" height="28" alt="Available in the Chrome Web Store"></a>
 
 ```bash
 brew install --cask chentao1006/tap/browsync
@@ -12,7 +12,7 @@ brew install --cask chentao1006/tap/browsync
 
 > [!IMPORTANT]
 > **Privacy First by Design**
-> BrowSync is built on a strict privacy-first architecture. All synchronization and URL routing happen **entirely locally** on your device via a local WebSocket daemon. Your browsing data (history, bookmarks, cookies) **never** leaves your machine, and no external servers or cloud services are involved.
+> BrowSync is built on a strict privacy-first architecture. All synchronization and URL routing happen **entirely locally** on your device via a local WebSocket daemon. Your browsing data (bookmarks, cookies, local storage, active tabs) **never** leaves your machine, and no external servers or cloud services are involved.
 
 ## 🚀 Key Features
 
@@ -73,15 +73,14 @@ Then in Xcode:
 2. Set your **Development Team**
 3. Press **⌘R** to build and run
 
-### 4. Loading the Chromium Extension
+### 4. Install Browser Extension
 
-For Chrome, Arc, Edge, or Brave:
+**Chromium Browsers (Chrome, Arc, Edge, Brave)**:
+You can install the BrowSync extension directly from the Chrome Web Store:
+[Install from Chrome Web Store](https://chrome.google.com/webstore/detail/nahmlhblgjnkkcmaiicngaepeepofpkh)
 
-1. Open the browser → go to `chrome://extensions/`
-2. Enable **Developer Mode** (top-right toggle)
-3. Click **Load Unpacked**
-4. Select the `ChromiumExtension/` folder
-5. The BrowSync extension icon will appear in the toolbar. Safari users can enable the native extension directly in Safari Settings.
+**Safari**:
+The app includes a native Safari extension. After running the BrowSync app, you can enable it directly in Safari's Settings -> Extensions.
 
 ## 🔍 Architecture & Protocol
 
@@ -169,7 +168,6 @@ BrowSync stores its data locally in your Application Support folder:
 ~/Library/Application Support/BrowSync/
 ├── sites/          # Per-site sync state
 ├── bookmarks/      # Synced bookmark snapshots
-├── history/        # History (when enabled)
 ├── logs/           # sync-YYYY-MM-DD.log
 └── settings.json   # All app settings
 ```
