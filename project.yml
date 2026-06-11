@@ -98,8 +98,8 @@ targets:
         CFBundleIdentifier: com.ct106.browsync.extension
         CFBundleName: BrowSyncExtension
         CFBundleDisplayName: BrowSync Extension
-        CFBundleShortVersionString: "1.0"
-        CFBundleVersion: "1"
+        CFBundleShortVersionString: "1.0.0"
+        CFBundleVersion: "2"
         NSExtension:
           NSExtensionPointIdentifier: com.apple.Safari.web-extension
           NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).SafariWebExtensionHandler

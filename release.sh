@@ -70,7 +70,7 @@ else
     sed -i '' "s/CFBundleVersion: .*/CFBundleVersion: \"$NEW_BUILD\"/" "$PROJECT_YML"
 
     echo "✅ Local configuration updated. Regenerating project..."
-    ./setup.sh > /dev/null
+    xcodegen > /dev/null
 
     # 2. Run Local Build
     chmod +x package.sh

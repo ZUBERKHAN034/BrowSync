@@ -53,8 +53,6 @@
 	</array>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
-	<key>LSUIElement</key>
-	<true/>
 	<key>SUFeedURL</key>
 	<string>https://browsync.ct106.com/appcast.xml</string>
 	<key>SUPublicEDKey</key>
