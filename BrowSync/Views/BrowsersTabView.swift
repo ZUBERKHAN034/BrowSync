@@ -83,7 +83,7 @@ struct BrowserRow: View {
                         if isRoutingFallback(for: info) {
                             Text("·")
                             Text(String(localized: "Routing Fallback", bundle: langBundle.bundle))
-                                .foregroundStyle(.orange)
+                                .foregroundStyle(.green)
                         }
                     }
                     .font(.caption)
@@ -126,7 +126,12 @@ struct BrowserRow: View {
                         } else {
                             Button(String(localized: "Install Extension", bundle: langBundle.bundle)) {
                                 if let url = URL(string: AppConfig.chromiumExtensionWebStoreURL) {
-                                    NSWorkspace.shared.open(url)
+                                    if let appURL = info.appURL {
+                                        let config = NSWorkspace.OpenConfiguration()
+                                        NSWorkspace.shared.open([url], withApplicationAt: appURL, configuration: config)
+                                    } else {
+                                        NSWorkspace.shared.open(url)
+                                    }
                                 }
                             }
                             .buttonStyle(.borderedProminent)

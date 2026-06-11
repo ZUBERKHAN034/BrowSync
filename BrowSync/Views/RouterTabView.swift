@@ -19,7 +19,6 @@ struct RouterTabView: View {
                     .toggleStyle(.switch)
             }
             .padding()
-            .background(Color(nsColor: .windowBackgroundColor))
             
             // Default Browser Banner
             if !appState.isDefaultBrowser {
@@ -91,7 +90,6 @@ struct RouterTabView: View {
                     Spacer()
                 }
                 .padding()
-                .background(Color(nsColor: .windowBackgroundColor))
             }
             .disabled(!appState.isRouterEnabled)
             

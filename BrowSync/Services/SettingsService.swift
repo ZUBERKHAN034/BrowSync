@@ -9,7 +9,7 @@ import os.log
 
 struct GeneralSettings: Codable, Equatable {
     var launchAtLogin: Bool = false
-    var hideWindowOnStartup: Bool = true
+    var hideWindowOnStartup: Bool = false
     var menuBarMode: MenuBarMode = .alwaysVisible
     var theme: AppTheme = .system
     var language: AppLanguage = .system
@@ -35,7 +35,7 @@ struct GeneralSettings: Codable, Equatable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         launchAtLogin = try container.decodeIfPresent(Bool.self, forKey: .launchAtLogin) ?? false
-        hideWindowOnStartup = try container.decodeIfPresent(Bool.self, forKey: .hideWindowOnStartup) ?? true
+        hideWindowOnStartup = try container.decodeIfPresent(Bool.self, forKey: .hideWindowOnStartup) ?? false
         menuBarMode = try container.decodeIfPresent(MenuBarMode.self, forKey: .menuBarMode) ?? .alwaysVisible
         theme = try container.decodeIfPresent(AppTheme.self, forKey: .theme) ?? .system
         language = try container.decodeIfPresent(AppLanguage.self, forKey: .language) ?? .system

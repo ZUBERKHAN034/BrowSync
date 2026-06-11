@@ -3,6 +3,14 @@
     <channel>
         <title>BrowSync</title>
         <item>
+            <title>1.0.1</title>
+            <pubDate>Thu, 11 Jun 2026 21:05:59 +0800</pubDate>
+            <sparkle:version>2</sparkle:version>
+            <sparkle:shortVersionString>1.0.1</sparkle:shortVersionString>
+            <sparkle:minimumSystemVersion>14.0</sparkle:minimumSystemVersion>
+            <enclosure url="https://github.com/chentao1006/browsync/releases/download/v1.0.1/BrowSync.dmg" length="5898219" type="application/octet-stream" sparkle:edSignature="m70W0/PI8nxp9YO8ckq7f/xpG35sCqU3Ff8m3J/UCLb5wtXH5GdwCZWxdE3kAAkV8UDHgvdI0aCQqqHxuUBkBg=="/>
+        </item>
+        <item>
             <title>1.0</title>
             <pubDate>Thu, 11 Jun 2026 20:42:56 +0800</pubDate>
             <sparkle:version>1</sparkle:version>
