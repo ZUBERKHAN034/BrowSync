@@ -133,7 +133,7 @@ struct AboutTabView: View {
                     }
                     
                     Button(String(localized: "Check for Updates", bundle: langBundle.bundle)) {
-                        (NSApp.delegate as? AppDelegate)?.updaterController.checkForUpdates(nil)
+                        AppDelegate.shared.updaterController.checkForUpdates(nil)
                     }
                 }
                 
