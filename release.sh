@@ -72,6 +72,10 @@ else
     sed -i '' "s/CFBundleShortVersionString: .*/CFBundleShortVersionString: \"$NEW_VERSION\"/" "$PROJECT_YML"
     sed -i '' "s/CFBundleVersion: .*/CFBundleVersion: \"$NEW_BUILD\"/" "$PROJECT_YML"
 
+    # Update Extension manifests
+    sed -i '' -E "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" "ChromiumExtension/manifest.json"
+    sed -i '' -E "s/\"version\": \".*\"/\"version\": \"$NEW_VERSION\"/" "BrowSyncExtension/Resources/manifest.json"
+
     echo "✅ Local configuration updated. Regenerating project..."
     xcodegen > /dev/null
 
@@ -113,8 +117,13 @@ git push origin "v$NEW_VERSION"
 # Use GitHub CLI to create release and upload assets
 if command -v gh >/dev/null 2>&1; then
     echo "📡 Creating GitHub Release and uploading assets..."
-    # DMG is the primary asset
-    ASSETS=("${RESULT_DIR}/BrowSync.dmg")
+    echo "📦 Packaging Chromium Extension..."
+    cd ChromiumExtension
+    zip -r "../${RESULT_DIR}/ChromiumExtension-v${NEW_VERSION}.zip" * -x "*.DS_Store" -x "*.git*" > /dev/null
+    cd ..
+    
+    # DMG and Extension are the primary assets
+    ASSETS=("${RESULT_DIR}/BrowSync.dmg" "${RESULT_DIR}/ChromiumExtension-v${NEW_VERSION}.zip")
     
     # If re-releasing the same version, we need to delete the old one first
     echo "🧹 Removing existing release and tag if they exist..."
