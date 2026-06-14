@@ -256,7 +256,7 @@ final class DaemonServer: ObservableObject {
             }
             
             if message.category == "tabSharing" {
-                // Broadcast a sync pull request to all other participating browsers
+                // Broadcast a sync pull request to all other participating browsers locally
                 let requestMessage = WSMessage(
                     type: .sync,
                     category: "tabSharing",
@@ -265,6 +265,46 @@ final class DaemonServer: ObservableObject {
                     timestamp: Date().timeIntervalSince1970
                 )
                 broadcast(requestMessage, excluding: client.id)
+                
+                // ALSO send the currently cached tabs (including iCloud remote tabs) to the requester
+                for (browser, tabs) in AppState.shared.remoteTabsCache {
+                    let purelyLocalTabs = tabs.filter { !$0.id.hasPrefix("icloud_") }
+                    let icloudTabs = tabs.filter { $0.id.hasPrefix("icloud_") }
+                    
+                    if browser != client.browser && !purelyLocalTabs.isEmpty {
+                        let cacheMessage = WSMessage(
+                            type: .sync,
+                            browser: browser.rawValue,
+                            category: "tabSharing",
+                            payload: .tabs(purelyLocalTabs),
+                            messageId: UUID().uuidString,
+                            timestamp: Date().timeIntervalSince1970
+                        )
+                        send(cacheMessage, toClientId: client.id)
+                    }
+                    
+                    let grouped = Dictionary(grouping: icloudTabs) { tab -> String in
+                        let parts = tab.id.components(separatedBy: "_")
+                        if parts.count >= 3 { return parts[1] }
+                        return "unknown"
+                    }
+                    
+                    for (device, deviceTabs) in grouped {
+                        // Use a composite browser ID to prevent Chrome extension from dropping tabs that match its own browser ID,
+                        // and to prevent overwriting tabs from multiple devices.
+                        let sendBrowserId = "\(browser.rawValue)_\(device)"
+                        
+                        let cacheMessage = WSMessage(
+                            type: .sync,
+                            browser: sendBrowserId,
+                            category: "tabSharing",
+                            payload: .tabs(deviceTabs),
+                            messageId: UUID().uuidString,
+                            timestamp: Date().timeIntervalSince1970
+                        )
+                        send(cacheMessage, toClientId: client.id)
+                    }
+                }
                 return
             }
             
