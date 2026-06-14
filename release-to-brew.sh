@@ -1,6 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
+# Ensure we use the newer git from Homebrew if available, as older git versions (like 2.33)
+# do not support gpg.format = ssh and will fail to parse ~/.gitconfig.
+export PATH="/opt/homebrew/bin:$PATH"
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ -n "${BREW_BIN:-}" ]; then
     BREW_BIN="$BREW_BIN"
