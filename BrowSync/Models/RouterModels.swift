@@ -9,7 +9,7 @@ enum RuleConditionField: String, CaseIterable, Codable, Identifiable {
     
     var id: String { rawValue }
     
-    var displayName: LocalizedStringResource {
+    var displayName: String {
         switch self {
         case .domain: return "Domain"
         case .url: return "URL"
@@ -32,7 +32,7 @@ enum RuleConditionOperator: String, CaseIterable, Codable, Identifiable {
     
     var id: String { rawValue }
     
-    var displayName: LocalizedStringResource {
+    var displayName: String {
         switch self {
         case .equals: return "Equals"
         case .notEquals: return "Not Equals"
@@ -52,7 +52,7 @@ enum RuleConditionLogic: String, CaseIterable, Codable, Identifiable {
     
     var id: String { rawValue }
     
-    var displayName: LocalizedStringResource {
+    var displayName: String {
         switch self {
         case .and: return "All Conditions"
         case .or: return "Any Condition"

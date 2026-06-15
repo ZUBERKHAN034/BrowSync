@@ -30,10 +30,10 @@ brew install --cask chentao1006/tap/browsync
 
 | | |
 |:---:|:---:|
-| ![Screenshot 1](screenshots/000001.jpg) | ![Screenshot 2](screenshots/000002.jpg) |
-| ![Screenshot 3](screenshots/000003.jpg) | ![Screenshot 4](screenshots/000004.jpg) |
-| ![Screenshot 5](screenshots/000005.jpg) | ![Screenshot 6](screenshots/000006.jpg) |
-| ![Screenshot 7](screenshots/000007.jpg) | ![Screenshot 8](screenshots/000008.jpg) |
+| ![Screenshot 1](screenshots/en/000001.jpg) | ![Screenshot 2](screenshots/en/000002.jpg) |
+| ![Screenshot 3](screenshots/en/000003.jpg) | ![Screenshot 4](screenshots/en/000004.jpg) |
+| ![Screenshot 5](screenshots/en/000005.jpg) | ![Screenshot 6](screenshots/en/000006.jpg) |
+| ![Screenshot 7](screenshots/en/000007.jpg) | ![Screenshot 8](screenshots/en/000008.jpg) |
 
 ## 🛠 Installation & Setup
 

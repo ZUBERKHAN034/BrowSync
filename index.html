@@ -432,14 +432,14 @@
         <button class="carousel-btn prev" aria-label="Previous">‹</button>
         <button class="carousel-btn next" aria-label="Next">›</button>
         <div class="carousel-slides" id="carousel">
-          <div class="carousel-slide"><img src="screenshots/000001.jpg" alt="Screenshot 1"></div>
-          <div class="carousel-slide"><img src="screenshots/000002.jpg" alt="Screenshot 2"></div>
-          <div class="carousel-slide"><img src="screenshots/000003.jpg" alt="Screenshot 3"></div>
-          <div class="carousel-slide"><img src="screenshots/000004.jpg" alt="Screenshot 4"></div>
-          <div class="carousel-slide"><img src="screenshots/000005.jpg" alt="Screenshot 5"></div>
-          <div class="carousel-slide"><img src="screenshots/000006.jpg" alt="Screenshot 6"></div>
-          <div class="carousel-slide"><img src="screenshots/000007.jpg" alt="Screenshot 7"></div>
-          <div class="carousel-slide"><img src="screenshots/000008.jpg" alt="Screenshot 8"></div>
+          <div class="carousel-slide"><img src="screenshots/en/000001.jpg" alt="Screenshot 1"></div>
+          <div class="carousel-slide"><img src="screenshots/en/000002.jpg" alt="Screenshot 2"></div>
+          <div class="carousel-slide"><img src="screenshots/en/000003.jpg" alt="Screenshot 3"></div>
+          <div class="carousel-slide"><img src="screenshots/en/000004.jpg" alt="Screenshot 4"></div>
+          <div class="carousel-slide"><img src="screenshots/en/000005.jpg" alt="Screenshot 5"></div>
+          <div class="carousel-slide"><img src="screenshots/en/000006.jpg" alt="Screenshot 6"></div>
+          <div class="carousel-slide"><img src="screenshots/en/000007.jpg" alt="Screenshot 7"></div>
+          <div class="carousel-slide"><img src="screenshots/en/000008.jpg" alt="Screenshot 8"></div>
         </div>
         <div class="carousel-dots" id="carousel-dots"></div>
       </div>
@@ -590,6 +590,18 @@
       document.querySelectorAll("[data-i18n]").forEach(el => {
         if(copy[lang][el.dataset.i18n]) el.innerText = copy[lang][el.dataset.i18n];
       });
+      document.querySelectorAll('.carousel-slide img').forEach((img, i) => {
+        const index = String(i + 1).padStart(6, '0');
+        img.src = `screenshots/${lang}/${index}.jpg`;
+      });
+      const lightboxImg = document.getElementById('lightbox-img');
+      if (lightboxImg && lightboxImg.src && lightboxImg.src.includes('screenshots/')) {
+        const match = lightboxImg.src.match(/00000\d/);
+        if(match) {
+          const index = match[0];
+          lightboxImg.src = `screenshots/${lang}/${index}.jpg`;
+        }
+      }
     }
 
     document.getElementById('lang-toggle').onclick = () => {

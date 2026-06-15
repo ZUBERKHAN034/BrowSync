@@ -133,7 +133,7 @@ struct StateSyncTabView: View {
                 Section(String(localized: "Website Options", bundle: langBundle.bundle)) {
                     Picker(String(localized: "Default Strategy", bundle: langBundle.bundle), selection: syncSettings.browserDataSyncStrategy) {
                         ForEach(BrowserDataSyncStrategy.allCases) { strategy in
-                            Text(strategy.displayName).tag(strategy)
+                            Text(String(localized: String.LocalizationValue(strategy.displayName), bundle: langBundle.bundle)).tag(strategy)
                         }
                     }
                     .pickerStyle(.menu)
@@ -154,7 +154,7 @@ struct StateSyncTabView: View {
                     
                     Picker(String(localized: "List Policy", bundle: langBundle.bundle), selection: syncSettings.websiteListPolicy) {
                         ForEach(WebsiteListPolicy.allCases) { policy in
-                            Text(policy.displayName).tag(policy)
+                            Text(String(localized: String.LocalizationValue(policy.displayName), bundle: langBundle.bundle)).tag(policy)
                         }
                     }
                     .pickerStyle(.menu)
@@ -191,7 +191,7 @@ struct StateSyncTabView: View {
                             Picker("", selection: $site.strategy) {
                                 Text(String(localized: "Default Policy", bundle: langBundle.bundle)).tag(BrowserDataSyncStrategy?.none)
                                 ForEach(BrowserDataSyncStrategy.allCases) { s in
-                                    Text(s.displayName).tag(BrowserDataSyncStrategy?.some(s))
+                                    Text(String(localized: String.LocalizationValue(s.displayName), bundle: langBundle.bundle)).tag(BrowserDataSyncStrategy?.some(s))
                                 }
                             }
                             .labelsHidden()

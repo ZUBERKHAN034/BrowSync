@@ -80,7 +80,7 @@ enum SyncCategory: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: LocalizedStringResource {
+    var displayName: String {
         switch self {
         case .bookmarks: return "Bookmarks"
         case .browserState: return "Browser State"
@@ -102,7 +102,7 @@ enum SyncCategory: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    var description: LocalizedStringResource {
+    var description: String {
         switch self {
         case .bookmarks:
             return "Bookmarks, folders, and favorites"
@@ -134,7 +134,7 @@ enum ConflictStrategy: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: LocalizedStringResource {
+    var displayName: String {
         switch self {
         case .primaryWins: return "Primary Wins"
         case .latestWins: return "Latest Wins"
@@ -151,7 +151,7 @@ enum BookmarkSyncStrategy: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: LocalizedStringResource {
+    var displayName: String {
         switch self {
         case .oneWay: return "Primary Only (One-way Sync)"
         case .twoWayMerge: return "Two-way Merge"
@@ -168,7 +168,7 @@ enum BrowserDataSyncStrategy: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: LocalizedStringResource {
+    var displayName: String {
         switch self {
         case .primaryWins: return "Primary Wins (One-way)"
         case .latestWins: return "Latest Activity Wins"
@@ -185,7 +185,7 @@ enum WebsiteListPolicy: String, CaseIterable, Codable, Identifiable {
 
     var id: String { rawValue }
 
-    var displayName: LocalizedStringResource {
+    var displayName: String {
         switch self {
         case .allowList: return "Only sync listed websites"
         case .blockList: return "Exclude listed websites"

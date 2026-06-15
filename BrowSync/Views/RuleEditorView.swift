@@ -153,7 +153,7 @@ struct RuleEditorView: View {
                 Section(header: Text(String(localized: "Match Conditions", bundle: langBundle.bundle)).font(.subheadline).foregroundColor(.secondary)) {
                     Picker(String(localized: "Match Logic", bundle: langBundle.bundle), selection: $rule.logic) {
                         ForEach(RuleConditionLogic.allCases) { logic in
-                            Text(logic.displayName).tag(logic)
+                            Text(String(localized: String.LocalizationValue(logic.displayName), bundle: langBundle.bundle)).tag(logic)
                         }
                     }
                     .pickerStyle(.segmented)
@@ -239,7 +239,7 @@ struct ConditionRow: View {
         HStack {
             Picker("", selection: $condition.field) {
                 ForEach(RuleConditionField.allCases) { field in
-                    Text(field.displayName).tag(field)
+                    Text(String(localized: String.LocalizationValue(field.displayName), bundle: langBundle.bundle)).tag(field)
                 }
             }
             .labelsHidden()
@@ -271,11 +271,11 @@ struct ConditionRow: View {
             } else {
                 Picker("", selection: $condition.operator) {
                     if condition.field == .sourceApp {
-                        Text(RuleConditionOperator.equals.displayName).tag(RuleConditionOperator.equals)
-                        Text(RuleConditionOperator.notEquals.displayName).tag(RuleConditionOperator.notEquals)
+                        Text(String(localized: String.LocalizationValue(RuleConditionOperator.equals.displayName), bundle: langBundle.bundle)).tag(RuleConditionOperator.equals)
+                        Text(String(localized: String.LocalizationValue(RuleConditionOperator.notEquals.displayName), bundle: langBundle.bundle)).tag(RuleConditionOperator.notEquals)
                     } else {
                         ForEach(RuleConditionOperator.allCases) { op in
-                            Text(op.displayName).tag(op)
+                            Text(String(localized: String.LocalizationValue(op.displayName), bundle: langBundle.bundle)).tag(op)
                         }
                     }
                 }

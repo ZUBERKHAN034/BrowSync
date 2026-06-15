@@ -112,7 +112,7 @@ struct BookmarkSyncTabView: View {
                 Section(String(localized: "Sync Strategy", bundle: langBundle.bundle)) {
                     Picker(String(localized: "Bookmark Strategy", bundle: langBundle.bundle), selection: syncSettings.bookmarkSyncStrategy) {
                         ForEach(BookmarkSyncStrategy.allCases) { strategy in
-                            Text(strategy.displayName).tag(strategy)
+                            Text(String(localized: String.LocalizationValue(strategy.displayName), bundle: langBundle.bundle)).tag(strategy)
                         }
                     }
                     .pickerStyle(.menu)

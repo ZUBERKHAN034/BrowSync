@@ -352,22 +352,10 @@ final class ICloudSyncManager: ObservableObject {
             service.general = remoteBundle.general
             service.general.iCloudSync = wasSyncEnabled
             
-            // Router Settings: Merge rules
-            let localRules = service.routerSettings.rules
-            let remoteRules = remoteBundle.router?.rules ?? []
-            
-            var mergedRules = localRules
-            for remoteRule in remoteRules {
-                if let idx = mergedRules.firstIndex(where: { $0.id == remoteRule.id }) {
-                    mergedRules[idx] = remoteRule
-                } else {
-                    mergedRules.append(remoteRule)
-                }
-            }
-            
+            // Router Settings: Use remote
             service.routerSettings.isEnabled = remoteBundle.router?.isEnabled ?? service.routerSettings.isEnabled
             service.routerSettings.fallbackBrowserId = remoteBundle.router?.fallbackBrowserId ?? service.routerSettings.fallbackBrowserId
-            service.routerSettings.rules = mergedRules
+            service.routerSettings.rules = remoteBundle.router?.rules ?? []
             
             // Sync Settings: Merge collections
             let remoteSync = remoteBundle.sync
@@ -381,22 +369,14 @@ final class ICloudSyncManager: ObservableObject {
             service.syncSettings.tabSharingEnabled = remoteSync.tabSharingEnabled
             service.syncSettings.automaticSync = remoteSync.automaticSync
             
-            // Union of Sets
-            service.syncSettings.bookmarkParticipatingBrowsers.formUnion(remoteSync.bookmarkParticipatingBrowsers)
-            service.syncSettings.stateParticipatingBrowsers.formUnion(remoteSync.stateParticipatingBrowsers)
-            service.syncSettings.tabSharingParticipatingBrowsers.formUnion(remoteSync.tabSharingParticipatingBrowsers)
-            service.syncSettings.enabledCategories.formUnion(remoteSync.enabledCategories)
+            // Sync Collections: Use remote
+            service.syncSettings.bookmarkParticipatingBrowsers = remoteSync.bookmarkParticipatingBrowsers
+            service.syncSettings.stateParticipatingBrowsers = remoteSync.stateParticipatingBrowsers
+            service.syncSettings.tabSharingParticipatingBrowsers = remoteSync.tabSharingParticipatingBrowsers
+            service.syncSettings.enabledCategories = remoteSync.enabledCategories
             
-            // Merge WebsiteSettings
-            var mergedSites = service.syncSettings.websiteSettings
-            for remoteSite in remoteSync.websiteSettings {
-                if let idx = mergedSites.firstIndex(where: { $0.domain == remoteSite.domain }) {
-                    mergedSites[idx] = remoteSite
-                } else {
-                    mergedSites.append(remoteSite)
-                }
-            }
-            service.syncSettings.websiteSettings = mergedSites
+            // Website Settings: Use remote
+            service.syncSettings.websiteSettings = remoteSync.websiteSettings
             
             service.save() // Save locally
             isDownloadingSettings = false

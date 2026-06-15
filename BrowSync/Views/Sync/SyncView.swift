@@ -5,6 +5,7 @@ import SwiftUI
 
 struct SyncView: View {
     @EnvironmentObject var appState: AppState
+    @EnvironmentObject var langBundle: LanguageBundle
     @State private var isSyncing = false
 
     private var syncSettings: Binding<SyncSettings> {
@@ -81,7 +82,7 @@ struct SyncView: View {
                                      description: "How bookmarks should be synced between browsers") {
                         Picker("Bookmark Strategy", selection: syncSettings.bookmarkSyncStrategy) {
                             ForEach(BookmarkSyncStrategy.allCases) { strategy in
-                                Text(strategy.displayName).tag(strategy)
+                                Text(String(localized: String.LocalizationValue(strategy.displayName), bundle: langBundle.bundle)).tag(strategy)
                             }
                         }
                         .pickerStyle(.radioGroup)
@@ -93,7 +94,7 @@ struct SyncView: View {
                                      description: "How to resolve conflicting data between browsers") {
                         Picker("Conflict Strategy", selection: syncSettings.conflictStrategy) {
                             ForEach(ConflictStrategy.allCases) { strategy in
-                                Text(strategy.displayName).tag(strategy)
+                                Text(String(localized: String.LocalizationValue(strategy.displayName), bundle: langBundle.bundle)).tag(strategy)
                             }
                         }
                         .pickerStyle(.radioGroup)
@@ -105,7 +106,7 @@ struct SyncView: View {
                                      description: "How to resolve conflicting cookies and local storage") {
                         Picker("Browser Data Strategy", selection: syncSettings.browserDataSyncStrategy) {
                             ForEach(BrowserDataSyncStrategy.allCases) { strategy in
-                                Text(strategy.displayName).tag(strategy)
+                                Text(String(localized: String.LocalizationValue(strategy.displayName), bundle: langBundle.bundle)).tag(strategy)
                             }
                         }
                         .pickerStyle(.radioGroup)
@@ -118,7 +119,7 @@ struct SyncView: View {
                         VStack(alignment: .leading, spacing: 12) {
                             Picker("List Policy", selection: syncSettings.websiteListPolicy) {
                                 ForEach(WebsiteListPolicy.allCases) { policy in
-                                    Text(policy.displayName).tag(policy)
+                                    Text(String(localized: String.LocalizationValue(policy.displayName), bundle: langBundle.bundle)).tag(policy)
                                 }
                             }
                             .pickerStyle(.radioGroup)
@@ -147,7 +148,7 @@ struct SyncView: View {
                                     Picker("", selection: $site.strategy) {
                                         Text("Default").tag(BrowserDataSyncStrategy?.none)
                                         ForEach(BrowserDataSyncStrategy.allCases) { s in
-                                            Text(s.displayName).tag(BrowserDataSyncStrategy?.some(s))
+                                            Text(String(localized: String.LocalizationValue(s.displayName), bundle: langBundle.bundle)).tag(BrowserDataSyncStrategy?.some(s))
                                         }
                                     }
                                     .labelsHidden()
@@ -220,6 +221,7 @@ struct SyncCategoryRow: View {
     let isEnabled: Bool
     var isHistoryNote: Bool = false
     let onToggle: (Bool) -> Void
+    @EnvironmentObject var langBundle: LanguageBundle
 
     var body: some View {
         HStack(spacing: 14) {
@@ -230,7 +232,7 @@ struct SyncCategoryRow: View {
 
             VStack(alignment: .leading, spacing: 2) {
                 HStack {
-                    Text(category.displayName)
+                    Text(String(localized: String.LocalizationValue(category.displayName), bundle: langBundle.bundle))
                         .font(.headline)
                     if isHistoryNote {
                         Text("Off by default")
@@ -242,7 +244,7 @@ struct SyncCategoryRow: View {
                             .clipShape(Capsule())
                     }
                 }
-                Text(category.description)
+                Text(String(localized: String.LocalizationValue(category.description), bundle: langBundle.bundle))
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
