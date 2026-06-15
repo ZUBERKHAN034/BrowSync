@@ -245,7 +245,7 @@ struct ConditionRow: View {
             .labelsHidden()
             .frame(width: 120)
             .onChange(of: condition.field) { _, newField in
-                if newField == .sourceApp {
+                if newField == .sourceApp || newField == .scheme {
                     if condition.operator != .equals && condition.operator != .notEquals {
                         condition.operator = .equals
                     }
@@ -270,7 +270,7 @@ struct ConditionRow: View {
                 
             } else {
                 Picker("", selection: $condition.operator) {
-                    if condition.field == .sourceApp {
+                    if condition.field == .sourceApp || condition.field == .scheme {
                         Text(String(localized: String.LocalizationValue(RuleConditionOperator.equals.displayName), bundle: langBundle.bundle)).tag(RuleConditionOperator.equals)
                         Text(String(localized: String.LocalizationValue(RuleConditionOperator.notEquals.displayName), bundle: langBundle.bundle)).tag(RuleConditionOperator.notEquals)
                     } else {
@@ -301,6 +301,20 @@ struct ConditionRow: View {
                             }
                             .tag(app.id)
                         }
+                    }
+                    .labelsHidden()
+                } else if condition.field == .scheme {
+                    Picker("", selection: $condition.value) {
+                        if condition.value.isEmpty {
+                            Text(String(localized: "Select Protocol", bundle: langBundle.bundle)).tag("")
+                            Divider()
+                        } else if !["http", "https", "file"].contains(condition.value) {
+                            Text(condition.value).tag(condition.value)
+                            Divider()
+                        }
+                        Text("http").tag("http")
+                        Text("https").tag("https")
+                        Text("file").tag("file")
                     }
                     .labelsHidden()
                 } else {

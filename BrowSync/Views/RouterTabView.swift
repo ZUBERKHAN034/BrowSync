@@ -199,18 +199,20 @@ struct RouterRuleRow: View {
                     if let targetId = rule.targetBrowserId {
                         let targetInfo = appState.browserInfos.first(where: { $0.id.rawValue == targetId })
                         HStack(spacing: 6) {
-                            AppIconImage(appURL: targetInfo?.appURL, size: 16)
+                            AppIconImage(appURL: targetInfo?.appURL, size: 20)
                             Text(targetInfo?.displayName ?? targetId)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .foregroundColor(.primary)
                         }
                     } else {
                         HStack(spacing: 6) {
-                            Image(systemName: "arrow.uturn.right.circle")
-                                .foregroundStyle(.secondary)
+                            Image(systemName: "arrow.uturn.right.circle.fill")
+                                .foregroundStyle(.primary)
                             Text(String(localized: "Default (fallback)", bundle: langBundle.bundle))
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                                .font(.body)
+                                .fontWeight(.medium)
+                                .foregroundColor(.primary)
                         }
                     }
                 }

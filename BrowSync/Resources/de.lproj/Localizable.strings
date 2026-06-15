@@ -334,3 +334,6 @@
 
 "iCloud Sync" = "iCloud-Synchronisierung";
 "Synchronize all settings, rules, and open tabs across your Mac devices using iCloud." = "Synchronisieren Sie alle Einstellungen, Regeln und geöffneten Tabs auf Ihren Mac-Geräten mit iCloud.";
+
+"Protocol" = "Protokoll";
+"Select Protocol" = "Protokoll auswählen";

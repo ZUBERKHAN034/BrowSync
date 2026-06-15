@@ -246,6 +246,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         let sourceAppBundleId = sourceBundleIdentifier(from: event)
         processURL(url, sourceAppBundleId: sourceAppBundleId)
     }
+
+    func application(_ application: NSApplication, open urls: [URL]) {
+        for url in urls {
+            hideDockIconIfNoVisibleMainWindow()
+            let source = NSWorkspace.shared.frontmostApplication?.bundleIdentifier ?? "unknown"
+            processURL(url, sourceAppBundleId: source)
+        }
+    }
     
     private func processURL(_ url: URL, sourceAppBundleId: String?) {
         appState.handleIncomingURL(url, sourceAppBundleId: sourceAppBundleId)

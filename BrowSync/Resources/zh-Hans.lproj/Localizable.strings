@@ -242,6 +242,7 @@
 "Loading Apps" = "正在加载 App 列表...";
 "Add Condition" = "添加条件";
 "Select App" = "请选择 App";
+"Select Protocol" = "请选择协议";
 "Confirm Delete Condition" = "确定要删除此条件吗？";
 "Delete Condition" = "删除";
 "To Time" = "至";
@@ -306,6 +307,7 @@
 "Many sites use browser fingerprinting or device-bound security tokens for authentication. Due to browser security restrictions, extensions cannot extract this data, and these tokens may be invalidated in different browser environments." = "许多网站使用浏览器指纹或绑定设备的安全令牌。受限于安全机制，扩展无法提取此类数据，且这些令牌在其他浏览器中可能失效。";
 "Delete this routing rule?" = "删除此分流规则？";
 "URL" = "URL";
+"Protocol" = "协议";
 "Check for updates automatically" = "自动检查更新";
 "Removing the custom rule for \"%@\" will revert to the global strategy." = "删除“%@”的自定义规则后将恢复全局策略。";
 "State" = "状态";

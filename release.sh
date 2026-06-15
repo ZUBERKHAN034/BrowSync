@@ -50,14 +50,14 @@ if [ "$SKIP_BUILD" = "true" ]; then
 else
     # When building, we need a new version (prompt if not provided)
     if [ -z "$NEW_VERSION_ARG" ]; then
-        read -p "Enter NEW Version (Current: $CURRENT_VERSION): " NEW_VERSION
+        read -p "Enter NEW Version (Current: $CURRENT_VERSION, press Enter to keep current): " NEW_VERSION
     else
         NEW_VERSION="$NEW_VERSION_ARG"
     fi
 
     if [ -z "$NEW_VERSION" ]; then
-        echo "❌ Error: New version cannot be empty."
-        exit 1
+        NEW_VERSION="$CURRENT_VERSION"
+        echo "Using current version: $NEW_VERSION"
     fi
 
     # Determine NEW_BUILD (Always increment for new builds)
