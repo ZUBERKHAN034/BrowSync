@@ -255,6 +255,15 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
+    func application(_ application: NSApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([NSUserActivityRestoring]) -> Void) -> Bool {
+        if userActivity.activityType == NSUserActivityTypeBrowsingWeb, let url = userActivity.webpageURL {
+            hideDockIconIfNoVisibleMainWindow()
+            processURL(url, sourceAppBundleId: "Handoff")
+            return true
+        }
+        return false
+    }
+    
     private func processURL(_ url: URL, sourceAppBundleId: String?) {
         appState.handleIncomingURL(url, sourceAppBundleId: sourceAppBundleId)
         hideDockIconIfNoVisibleMainWindow()
