@@ -252,8 +252,13 @@ final class AppState: ObservableObject {
                     }
                 }
             } else if updated.extensionStatus == .waitingConnection {
-                // Scanner found extension in filesystem but no prior connection record — keep it
-                updated.extensionStatus = .waitingConnection
+                // Scanner found extension in filesystem but no prior connection record
+                let isRunning = !NSWorkspace.shared.runningApplications.filter { $0.bundleIdentifier == info.browser.bundleIdentifier }.isEmpty
+                if !isRunning {
+                    updated.extensionStatus = .offline
+                } else {
+                    updated.extensionStatus = .waitingConnection
+                }
             }
             
             return updated
