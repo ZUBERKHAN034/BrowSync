@@ -123,7 +123,7 @@ final class BrowserScanner: ObservableObject {
                             let manifest = extInfo["manifest"] as? [String: Any]
                             let name = (manifest?["name"] as? String)?.lowercased() ?? ""
                             
-                            if path.contains("browsync") || name.contains("browsync") {
+                            if path.contains("browsync") || name.contains("browsync") || name.contains("__msg_extname__") {
                                 let state = extInfo["state"] as? Int ?? 1
                                 if state == 1 { return .waitingConnection }
                                 foundAnyDisabled = true
@@ -162,7 +162,7 @@ final class BrowserScanner: ObservableObject {
                     let data = try? Data(contentsOf: manifestURL),
                     let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
                     let name = json["name"] as? String,
-                    name.contains("BrowSync")
+                    name.lowercased().contains("browsync") || name.lowercased().contains("__msg_extname__")
                 else { continue }
                 return true
             }

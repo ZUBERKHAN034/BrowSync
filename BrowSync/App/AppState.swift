@@ -268,6 +268,7 @@ final class AppState: ObservableObject {
             if connected {
                 let previousStatus = browserInfos[idx].extensionStatus
                 browserInfos[idx].extensionStatus = .connected
+                UserDefaults.standard.set(true, forKey: "extension_installed_\(browser.rawValue)")
                 UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: lastConnectedKey)
                 
                 let shouldNotify = previousStatus == .offline || previousStatus == .notInstalled || previousStatus == .extensionDisabled
