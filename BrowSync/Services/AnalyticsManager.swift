@@ -11,14 +11,14 @@ final class AnalyticsManager {
         // We initialize Aptabase. It doesn't send events unless trackEvent is called.
         Aptabase.shared.initialize(appKey: "A-US-7527250881")
         
-        let settings = SettingsService().general
+        let settings = AppState.shared.settingsService.general
         if settings.analyticsEnabled {
             trackEvent("App Started")
         }
     }
     
     func trackEvent(_ eventName: String, props: [String: Any]? = nil) {
-        let settings = SettingsService().general
+        let settings = AppState.shared.settingsService.general
         guard settings.analyticsEnabled else { return }
         
         if let props = props {

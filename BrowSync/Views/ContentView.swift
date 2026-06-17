@@ -154,14 +154,11 @@ struct AboutTabView: View {
                         VStack(alignment: .leading, spacing: 2) {
                             Toggle(String(localized: "Send Anonymous Usage Statistics", bundle: langBundle.bundle), isOn: settings.analyticsEnabled)
                                 .onChange(of: settings.analyticsEnabled.wrappedValue) { _, newValue in
-                                    if newValue {
-                                        AnalyticsManager.shared.trackEvent("Analytics Enabled")
-                                    } else {
-                                        // Once disabled, it won't send anymore
-                                        AnalyticsManager.shared.trackEvent("Analytics Disabled")
-                                    }
                                     appState.settingsService.general.analyticsOptInPrompted = true
                                     appState.settingsService.save()
+                                    if newValue {
+                                        AnalyticsManager.shared.trackEvent("Analytics Enabled")
+                                    }
                                 }
                             Text(String(localized: "Help us improve BrowSync by sending anonymous usage data.", bundle: langBundle.bundle))
                                 .font(.caption)
