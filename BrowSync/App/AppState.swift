@@ -372,6 +372,23 @@ extension AppState: DaemonServerDelegate {
         }
     }
 
+    nonisolated func daemonServer(_ server: DaemonServer, didReceiveOpenURL message: WSMessage, from clientId: String) {
+        Task { @MainActor in
+            guard case .raw(let raw) = message.payload,
+                  let targetBrowserRaw = raw["targetBrowser"]?.value as? String,
+                  let targetBrowser = Browser(rawValue: targetBrowserRaw),
+                  let urlString = raw["url"]?.value as? String,
+                  let url = URL(string: urlString),
+                  ["http", "https"].contains(url.scheme?.lowercased() ?? ""),
+                  let appURL = self.appURL(forBrowserId: targetBrowser.rawValue) else {
+                return
+            }
+
+            self.syncService.log("Opening '\(url.absoluteString)' from [\(clientId)] in \(targetBrowser.displayName)")
+            NSWorkspace.shared.open([url], withApplicationAt: appURL, configuration: NSWorkspace.OpenConfiguration())
+        }
+    }
+
 
     nonisolated func daemonServer(_ server: DaemonServer, didReceivePullBookmarks clientId: String) {
         Task { @MainActor in

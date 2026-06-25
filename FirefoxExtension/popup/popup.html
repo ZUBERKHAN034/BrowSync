@@ -308,6 +308,37 @@
       flex-shrink: 0;
     }
 
+    .open-browser-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .browser-open-btn {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 8px;
+      background: rgba(120, 120, 128, 0.12);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .browser-open-btn:hover {
+      background: rgba(120, 120, 128, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .browser-open-btn img {
+      width: 22px;
+      height: 22px;
+      flex-shrink: 0;
+    }
+
     .remote-tab-title {
       font-size: 13px;
       white-space: nowrap;
@@ -379,6 +410,10 @@
       <select id="selectSiteSourceBrowser"
         style="font-size: 12px; padding: 2px 4px; border-radius: 4px; background: var(--bg-color); color: var(--text-color); border: 1px solid rgba(128,128,128,0.3);">
       </select>
+    </div>
+    <div id="openInBrowserSection" style="display:none; margin-top: 14px;">
+      <div class="section-title" data-i18n="openInOtherBrowser">Open in Another Browser</div>
+      <div id="openInBrowserList" class="open-browser-row"></div>
     </div>
   </div>
 

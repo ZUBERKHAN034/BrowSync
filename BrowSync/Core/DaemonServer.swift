@@ -32,6 +32,7 @@ protocol DaemonServerDelegate: AnyObject {
     func daemonServer(_ server: DaemonServer, didReceivePullBookmarks clientId: String)
     func daemonServer(_ server: DaemonServer, didReceiveSettings message: WSMessage, from clientId: String)
     func daemonServer(_ server: DaemonServer, didReceiveOpenSettingsFrom clientId: String)
+    func daemonServer(_ server: DaemonServer, didReceiveOpenURL message: WSMessage, from clientId: String)
 }
 
 // MARK: - Daemon Server
@@ -371,6 +372,13 @@ final class DaemonServer: ObservableObject {
             }) else { return }
             client.lastSeen = Date()
             delegate?.daemonServer(self, didReceiveOpenSettingsFrom: client.id)
+
+        case .openURL:
+            guard let client = clients.values.first(where: {
+                ObjectIdentifier($0.connection) == connKey
+            }) else { return }
+            client.lastSeen = Date()
+            delegate?.daemonServer(self, didReceiveOpenURL: message, from: client.id)
 
         case .disconnect:
             removeConnection(connection)

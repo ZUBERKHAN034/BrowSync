@@ -15,6 +15,7 @@ enum WSMessageType: String, Codable {
     case disconnect
     case settings
     case openSettings = "open_settings"
+    case openURL = "open_url"
 }
 
 // MARK: - Base Message

@@ -91,5 +91,8 @@
   },
   "addingToSafari": {
     "message": "Añadiendo…"
+  },
+  "openInOtherBrowser": {
+    "message": "Abrir en otro navegador"
   }
 }

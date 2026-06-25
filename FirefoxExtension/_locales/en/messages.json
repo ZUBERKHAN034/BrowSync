@@ -85,5 +85,8 @@
   },
   "disabledByBlacklist": {
     "message": "Sync is disabled for this domain to protect your account security."
+  },
+  "openInOtherBrowser": {
+    "message": "Open in Another Browser"
   }
 }

@@ -85,5 +85,8 @@
   },
   "disabledByBlacklist": {
     "message": "La synchronisation est désactivée pour ce domaine afin de protéger la sécurité de votre compte."
+  },
+  "openInOtherBrowser": {
+    "message": "Ouvrir dans un autre navigateur"
   }
 }

@@ -91,5 +91,8 @@
   },
   "addingToSafari": {
     "message": "正在添加…"
+  },
+  "openInOtherBrowser": {
+    "message": "用其他浏览器打开"
   }
 }

@@ -91,5 +91,8 @@
   },
   "addingToSafari": {
     "message": "追加中…"
+  },
+  "openInOtherBrowser": {
+    "message": "別のブラウザで開く"
   }
 }

@@ -48,6 +48,7 @@ function detectBrowserId() {
 
 const DETECTED_BROWSER = detectBrowserId();
 const INSTANCE_ID = `${DETECTED_BROWSER}-main`;
+chrome.storage.local.set({ currentBrowserId: DETECTED_BROWSER }).catch(() => {});
 
 // ─── WebSocket management ────────────────────────────────────────────────────
 
@@ -1094,6 +1095,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     send({
       type: 'open_settings',
       browser: DETECTED_BROWSER,
+      messageId: crypto.randomUUID(),
+      timestamp: Date.now()
+    });
+    sendResponse({ ok: true });
+    return true;
+  }
+
+  if (message.type === 'OPEN_URL_IN_BROWSER') {
+    send({
+      type: 'open_url',
+      browser: DETECTED_BROWSER,
+      payload: { kind: 'raw', raw: { targetBrowser: message.browser, url: message.url } },
       messageId: crypto.randomUUID(),
       timestamp: Date.now()
     });

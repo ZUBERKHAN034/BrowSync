@@ -38,12 +38,71 @@ const toggleTabSharing = document.getElementById('toggleTabSharing');
 const btnSetRouterDefault = document.getElementById('btnSetRouterDefault');
 const textIsRouterDefault = document.getElementById('textIsRouterDefault');
 const btnMoreSettings = document.getElementById('btnMoreSettings');
+const browserNames = {
+  'safari': 'Safari',
+  'chrome': 'Chrome',
+  'firefox': 'Firefox',
+  'arc': 'Arc',
+  'edge': 'Edge',
+  'brave': 'Brave'
+};
+
+function detectCurrentBrowserId() {
+  const ua = navigator.userAgent.toLowerCase();
+  if (ua.includes('firefox/')) return 'firefox';
+  if (ua.includes('edg/')) return 'edge';
+  if (ua.includes('safari/') && !ua.includes('chrome/') && !ua.includes('chromium/')) return 'safari';
+  return 'chrome';
+}
+
+function renderOpenInBrowsers(installedBrowsers, currentBrowserId, currentUrl) {
+  const section = document.getElementById('openInBrowserSection');
+  const list = document.getElementById('openInBrowserList');
+  if (!section || !list) return;
+
+  list.innerHTML = '';
+  if (!currentUrl || !/^https?:\/\//i.test(currentUrl)) {
+    section.style.display = 'none';
+    return;
+  }
+
+  const targets = (installedBrowsers || []).filter(browser => browser !== currentBrowserId);
+  if (targets.length === 0) {
+    section.style.display = 'none';
+    return;
+  }
+
+  for (const browser of targets) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'browser-open-btn';
+    button.title = browserNames[browser] || browser;
+    button.setAttribute('aria-label', button.title);
+    button.addEventListener('click', () => {
+      chrome.runtime.sendMessage({
+        type: 'OPEN_URL_IN_BROWSER',
+        browser,
+        url: currentUrl
+      }, () => window.close());
+    });
+
+    const icon = document.createElement('img');
+    icon.src = `../icons/${browser}.png`;
+    icon.alt = '';
+    icon.onerror = () => { icon.src = '../icons/icon16.png'; };
+
+    button.appendChild(icon);
+    list.appendChild(button);
+  }
+
+  section.style.display = 'block';
+}
 
 async function loadSettings() {
-  const { appSettings } = await chrome.storage.local.get('appSettings');
+  const { appSettings, currentBrowserId } = await chrome.storage.local.get(['appSettings', 'currentBrowserId']);
   if (!appSettings) return;
 
-  const browserId = navigator.userAgent.toLowerCase().includes('safari') && !navigator.userAgent.toLowerCase().includes('chrome') ? 'safari' : 'chrome';
+  const browserId = currentBrowserId || detectCurrentBrowserId();
 
   const isBookmarkSync = appSettings.bookmarkParticipatingBrowsers?.[browserId] === true;
   const isStateSync = appSettings.stateParticipatingBrowsers?.[browserId] === true;
@@ -95,6 +154,7 @@ async function loadSettings() {
       siteSyncSection.style.display = 'block'; // ALWAYS SHOW
       const url = tabs.length > 0 ? tabs[0].url : null;
       let activeHostname = null;
+      renderOpenInBrowsers(appSettings.installedBrowsers || ['safari', 'chrome'], browserId, url);
 
       if (url && /^https?:/i.test(url)) {
         try {
@@ -180,16 +240,7 @@ async function loadSettings() {
       if (selectSiteSourceBrowser) {
         const installedBrowsers = appSettings.installedBrowsers || ['safari', 'chrome'];
         selectSiteSourceBrowser.innerHTML = '';
-        
-        const browserNames = {
-          'safari': 'Safari',
-          'chrome': 'Chrome',
-          'firefox': 'Firefox',
-          'arc': 'Arc',
-          'edge': 'Edge',
-          'brave': 'Brave'
-        };
-        
+
         installedBrowsers.forEach(b => {
           const opt = document.createElement('option');
           opt.value = b;

@@ -91,5 +91,8 @@
   },
   "addingToSafari": {
     "message": "추가 중…"
+  },
+  "openInOtherBrowser": {
+    "message": "다른 브라우저에서 열기"
   }
 }

@@ -91,5 +91,8 @@
   },
   "addingToSafari": {
     "message": "Ajout en cours…"
+  },
+  "openInOtherBrowser": {
+    "message": "Ouvrir dans un autre navigateur"
   }
 }

@@ -85,5 +85,8 @@
   },
   "disabledByBlacklist": {
     "message": "为保护您的账号安全，此网站禁止被同步。"
+  },
+  "openInOtherBrowser": {
+    "message": "用其他浏览器打开"
   }
 }
