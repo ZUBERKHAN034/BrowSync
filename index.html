@@ -130,7 +130,7 @@
     }
 
     .cta-group {
-      display: flex; gap: 16px; justify-content: flex-start; align-items: center; white-space: nowrap;
+      display: flex; gap: 16px; justify-content: flex-start; align-items: center; flex-wrap: wrap; white-space: nowrap;
     }
     .btn-primary {
       background: #000000; color: #ffffff;
@@ -175,13 +175,13 @@
     .hero-homebrew button:hover { background: var(--border); }
 
     .store-badge {
-      display: inline-flex; align-items: center; height: 48px;
+      display: inline-flex; align-items: center; flex: 0 0 auto;
       transition: all 0.3s ease; border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       white-space: nowrap;
     }
     .store-badge img {
-      height: 100%; border-radius: 8px; border: 1px solid var(--border);
+      width: auto; height: 46px; border-radius: 8px; border: 1px solid var(--border);
     }
     .store-badge:hover {
       transform: translateY(-2px);
@@ -238,12 +238,13 @@
     .btn-firefox {
       background: var(--card-bg); color: var(--text);
       border: 1px solid var(--border);
+      height: 46px;
     }
     .btn-firefox:hover {
       background: var(--card-bg-hover);
     }
     .btn-firefox img {
-      padding: 8px 12px; height: 100%; border: none !important; border-radius: 0;
+      padding: 8px 12px; width: 58px; height: 46px; object-fit: contain; border: none !important; border-radius: 0;
     }
     .btn-firefox span {
       font-weight: 600; padding-right: 16px; font-size: 0.95rem; white-space: nowrap;
@@ -422,6 +423,11 @@
     }
     @media (max-width: 600px) {
       .hero { margin-top: 80px; }
+      .cta-group { gap: 12px; white-space: normal; }
+      .store-badge img { height: 42px; }
+      .btn-firefox { height: 42px; }
+      .btn-firefox img { width: 54px; height: 42px; }
+      .btn-firefox span { font-size: 0.9rem; padding-right: 14px; }
       footer { flex-direction: column; align-items: flex-start; }
       .bento-card { padding: 32px 24px; }
     }
@@ -453,7 +459,7 @@
         <div class="cta-container">
           <div class="cta-group">
             <a href="https://apps.apple.com/cn/app/id6784604835?mt=12" target="_blank" rel="noopener" class="store-badge app-store-badge">
-              <img data-app-store-badge src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/zh-cn?size=250x83" alt="从 App Store 下载">
+              <img data-app-store-badge src="BrowSync/Resources/Marketing/download-on-app-store-zh.svg" alt="从 App Store 下载">
             </a>
             <a href="https://chrome.google.com/webstore/detail/nahmlhblgjnkkcmaiicngaepeepofpkh" target="_blank" class="store-badge">
               <img src="BrowSync/Resources/Marketing/chrome-web-store-badge.png" alt="Available in the Chrome Web Store">
@@ -546,7 +552,7 @@
           <h3 data-i18n="install.title" style="justify-content: center; font-size: 2rem; margin-bottom: 24px;">安装 BrowSync</h3>
           <div class="cta-group" style="margin-bottom: 32px;">
             <a href="https://apps.apple.com/cn/app/id6784604835?mt=12" target="_blank" rel="noopener" class="store-badge app-store-badge">
-              <img data-app-store-badge src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/zh-cn?size=250x83" alt="从 App Store 下载">
+              <img data-app-store-badge src="BrowSync/Resources/Marketing/download-on-app-store-zh.svg" alt="从 App Store 下载">
             </a>
             <a href="https://chrome.google.com/webstore/detail/nahmlhblgjnkkcmaiicngaepeepofpkh" target="_blank" class="store-badge">
               <img src="BrowSync/Resources/Marketing/chrome-web-store-badge.png" alt="Available in the Chrome Web Store">
@@ -591,7 +597,7 @@
         "hero.title": "跨浏览器的分流与同步中枢",
         "hero.lead": "打通 Safari、所有 Chromium 内核浏览器与 Firefox。根据规则智能分流链接，并实时同步书签与登录状态。纯本地运行，捍卫您的隐私。",
         "hero.cta": "下载安装包",
-        "appStore.badge": "https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/zh-cn?size=250x83",
+        "appStore.badge": "BrowSync/Resources/Marketing/download-on-app-store-zh.svg",
         "appStore.alt": "从 App Store 下载",
         "features.title": "主要功能",
         "feat1.title": "🔗 URL 分流",
@@ -621,7 +627,7 @@
         "hero.title": "Cross-Browser Routing & Sync Hub",
         "hero.lead": "Unite Safari, all Chromium-based browsers, and Firefox. Intelligently route your links, and sync bookmarks and sessions in real-time. 100% local and privacy-first.",
         "hero.cta": "Download DMG",
-        "appStore.badge": "https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83",
+        "appStore.badge": "BrowSync/Resources/Marketing/download-on-app-store-en.svg",
         "appStore.alt": "Download on the App Store",
         "features.title": "Key Features",
         "feat1.title": "🔗 URL Routing",

@@ -4,7 +4,7 @@
 
 **BrowSync** is a cross-browser routing and sync hub for macOS. It unites Safari, all Chromium-based browsers, and Firefox, intelligently routing links and syncing bookmarks and sessions in real-time.
 
-<a href="https://apps.apple.com/cn/app/id6784604835?mt=12"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83" height="40" alt="Download on the App Store"></a> <a href="https://chrome.google.com/webstore/detail/nahmlhblgjnkkcmaiicngaepeepofpkh"><img src="BrowSync/Resources/Marketing/chrome-web-store-badge.png" height="40" alt="Available in the Chrome Web Store"></a> <a href="https://addons.mozilla.org/en-US/firefox/addon/brow-sync/"><img src="https://img.shields.io/badge/Firefox_Add--on-FF7139?style=for-the-badge&logo=firefox&logoColor=white" height="40" alt="Get the Firefox Add-on"></a>
+<a href="https://apps.apple.com/cn/app/id6784604835?mt=12"><img src="BrowSync/Resources/Marketing/download-on-app-store-en.svg" height="40" alt="Download on the App Store"></a> <a href="https://chrome.google.com/webstore/detail/nahmlhblgjnkkcmaiicngaepeepofpkh"><img src="BrowSync/Resources/Marketing/chrome-web-store-badge.png" height="40" alt="Available in the Chrome Web Store"></a> <a href="https://addons.mozilla.org/en-US/firefox/addon/brow-sync/"><img src="https://img.shields.io/badge/Firefox_Add--on-FF7139?style=for-the-badge&logo=firefox&logoColor=white" height="40" alt="Get the Firefox Add-on"></a>
 
 ```bash
 brew install --cask chentao1006/tap/browsync
