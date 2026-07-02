@@ -1,0 +1,20 @@
+{
+  "name": "browsync-server",
+  "version": "1.1.2",
+  "private": true,
+  "description": "BrowSync remote sync server — WebSocket daemon for cross-browser bookmark, cookie, storage, and tab sync",
+  "main": "src/server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js --verbose",
+    "check": "node --check src/server.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.7.0",
+    "ws": "^8.19.0",
+    "uuid": "^10.0.0"
+  }
+}

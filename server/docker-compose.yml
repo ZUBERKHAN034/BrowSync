@@ -1,0 +1,17 @@
+services:
+  browsync:
+    build: .
+    container_name: browsync-server
+    restart: unless-stopped
+    ports:
+      - "62333:62333"
+    environment:
+      - HOST=0.0.0.0
+      - PORT=62333
+      - DATA_DIR=/app/data
+      - BROWSYNC_AUTH_TOKEN=${BROWSYNC_AUTH_TOKEN:-}
+    volumes:
+      - browsync_data:/app/data
+
+volumes:
+  browsync_data:
